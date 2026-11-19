@@ -1,118 +1,1071 @@
+
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#11101b">
-  <meta name="description" content="Mongil Database: base de datos de personajes, artefactos, monsterlings y equipamiento de Mongil: Star Dive.">
+  <meta name="theme-color" content="#0F172A">
+  <meta name="description" content="Mongil Database: guía de personajes, artefactos, monsterlings y equipamiento de Mongil: Star Dive.">
   <title>Mongil Database</title>
+
   <style>
-    :root{color-scheme:dark;--bg:#11101b;--panel:#1b1929;--panel2:#242136;--line:#37324c;--text:#f5f1ff;--muted:#aaa3bd;--accent:#c7a7ff;--gold:#f3cf85;--good:#9fe0bd;--warn:#f3cf85}
-    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#382b58 0,transparent 48%),var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-    .wrap{width:min(1180px,calc(100% - 32px));margin:auto}.top{padding:42px 0 26px;border-bottom:1px solid var(--line)}
-    .eyebrow{color:var(--gold);font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
-    h1{font-size:clamp(32px,6vw,54px);line-height:1.05;margin:10px 0 12px;letter-spacing:-.04em}
-    .sub{color:var(--muted);max-width:650px;margin:0}.status{display:inline-flex;align-items:center;gap:8px;margin-top:20px;padding:7px 12px;border:1px solid var(--line);border-radius:99px;color:var(--muted);font-size:12px}
-    .dot{width:8px;height:8px;border-radius:50%;background:var(--warn)}.dot.live{background:var(--good)}
-    .stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;padding:24px 0}
-    .stat,.panel{background:linear-gradient(145deg,var(--panel),#171523);border:1px solid var(--line);border-radius:16px}
-    .stat{padding:16px}.stat strong{display:block;font-size:27px;letter-spacing:-.04em}.stat span{color:var(--muted);font-size:12px}
-    .toolbar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:8px 0 16px}
-    .tabs{display:flex;gap:8px;flex-wrap:wrap}.tab{border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:9px 13px;border-radius:10px;cursor:pointer;font:inherit}
-    .tab[aria-pressed=true]{background:#382b58;border-color:#8163ad;color:white}
-    input{width:min(320px,100%);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 13px;color:var(--text);font:inherit}
-    .panel{overflow:hidden;margin-bottom:42px}.panelhead{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}
-    h2{font-size:19px;margin:0}.count{color:var(--muted);font-size:12px}
-    .tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:650px}th,td{text-align:left;padding:12px 16px;border-bottom:1px solid #2b273b;vertical-align:top;max-width:420px;overflow-wrap:anywhere}
-    th{color:var(--gold);font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:#211e30}td{color:#e8e2f4;font-size:13px}tr:last-child td{border-bottom:0}
-    .empty{padding:30px 20px;color:var(--muted);text-align:center}.error{color:#ffb4b4}
-    footer{padding:20px 0 34px;color:var(--muted);font-size:12px;border-top:1px solid var(--line)}
-    @media(max-width:760px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat:last-child{grid-column:span 2}.top{padding-top:30px}.panelhead{align-items:flex-start;flex-direction:column}}
+    :root {
+      color-scheme: dark;
+      --bg: #0F172A;
+      --bg2: #131620;
+      --panel: #182235;
+      --panel2: #1E293B;
+      --line: #334155;
+      --text: #F1F5F9;
+      --muted: #94A3B8;
+      --cyan: #38BDF8;
+      --violet: #8B5CF6;
+      --gold: #FBBF24;
+      --green: #4ADE80;
+      --red: #F87171;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 50% -20%, rgba(139, 92, 246, .17), transparent 48%),
+        radial-gradient(ellipse at 100% 30%, rgba(56, 189, 248, .06), transparent 35%),
+        var(--bg);
+      color: var(--text);
+      font: 15px/1.55 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    .wrap {
+      width: min(1240px, calc(100% - 36px));
+      margin: auto;
+    }
+
+    /* ENCABEZADO */
+
+    .top {
+      position: relative;
+      padding: 48px 0 34px;
+      border-bottom: 1px solid var(--line);
+      overflow: hidden;
+    }
+
+    .top::before {
+      content: "";
+      position: absolute;
+      width: 340px;
+      height: 340px;
+      right: -100px;
+      top: -190px;
+      border: 1px solid rgba(56, 189, 248, .17);
+      border-radius: 50%;
+      box-shadow:
+        0 0 80px rgba(56, 189, 248, .08),
+        inset 0 0 70px rgba(139, 92, 246, .08);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      color: var(--cyan);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(36px, 6vw, 62px);
+      line-height: 1;
+      margin: 15px 0;
+      letter-spacing: -.055em;
+      font-weight: 900;
+      text-shadow: 0 0 30px rgba(56, 189, 248, .16);
+    }
+
+    .sub {
+      color: var(--muted);
+      max-width: 680px;
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-top: 23px;
+      padding: 8px 13px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: rgba(19, 22, 32, .8);
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    .dot.live {
+      background: var(--green);
+    }
+
+    /* ESTADÍSTICAS */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 13px;
+      padding: 26px 0;
+    }
+
+    .stat {
+      position: relative;
+      overflow: hidden;
+      padding: 17px;
+      background: linear-gradient(145deg, var(--panel), var(--bg2));
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      transition: .2s ease;
+    }
+
+    .stat::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--cyan);
+      box-shadow: 0 0 12px var(--cyan);
+    }
+
+    .stat:nth-child(2)::before {
+      background: var(--violet);
+      box-shadow: 0 0 12px var(--violet);
+    }
+
+    .stat:nth-child(3)::before {
+      background: var(--gold);
+      box-shadow: 0 0 12px var(--gold);
+    }
+
+    .stat:nth-child(4)::before {
+      background: var(--green);
+      box-shadow: 0 0 12px var(--green);
+    }
+
+    .stat:nth-child(5)::before {
+      background: #A78BFA;
+      box-shadow: 0 0 12px #A78BFA;
+    }
+
+    .stat:hover {
+      border-color: rgba(56, 189, 248, .55);
+      transform: translateY(-3px);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 29px;
+      line-height: 1.2;
+      letter-spacing: -.04em;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    /* NAVEGACIÓN Y BÚSQUEDA */
+
+    .toolbar {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin: 5px 0 18px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--muted);
+      padding: 10px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 800;
+      transition: .2s ease;
+    }
+
+    .tab:hover {
+      border-color: var(--cyan);
+      color: white;
+    }
+
+    .tab[aria-pressed="true"] {
+      background: rgba(56, 189, 248, .13);
+      border-color: var(--cyan);
+      color: var(--cyan);
+      box-shadow: 0 0 16px rgba(56, 189, 248, .12);
+    }
+
+    input {
+      width: min(340px, 100%);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 11px 14px;
+      color: var(--text);
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, .12);
+    }
+
+    input::placeholder {
+      color: #718096;
+    }
+
+    /* PANEL PRINCIPAL */
+
+    .panel {
+      overflow: hidden;
+      margin-bottom: 42px;
+      background: linear-gradient(145deg, var(--panel), var(--bg2));
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: 0 15px 45px rgba(0, 0, 0, .18);
+    }
+
+    .panelhead {
+      padding: 19px 21px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+
+    h2 {
+      font-size: 17px;
+      margin: 0;
+      font-weight: 900;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .count {
+      color: var(--cyan);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .empty {
+      padding: 38px 20px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .error {
+      color: #FCA5A5;
+    }
+
+    /* TARJETAS DE PERSONAJES Y MONSTERLINGS */
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+      gap: 15px;
+      padding: 20px;
+    }
+
+    .entity-card {
+      --entity-color: var(--cyan);
+      position: relative;
+      overflow: hidden;
+      min-width: 0;
+      background: linear-gradient(155deg, #202C40, #151D2C 75%);
+      border: 1px solid var(--line);
+      border-top: 3px solid var(--entity-color);
+      border-radius: 9px;
+      padding: 17px;
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .entity-card::after {
+      content: "";
+      position: absolute;
+      width: 130px;
+      height: 130px;
+      top: -75px;
+      right: -65px;
+      border-radius: 50%;
+      background: var(--entity-color);
+      opacity: .08;
+      filter: blur(30px);
+      pointer-events: none;
+    }
+
+    .entity-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--entity-color);
+      box-shadow: 0 8px 28px color-mix(in srgb, var(--entity-color) 13%, transparent);
+    }
+
+    .entity-card.rarity-5 {
+      --entity-color: var(--gold);
+      border-top-color: var(--gold);
+      background: linear-gradient(155deg, #39321F, #1C1D2A 75%);
+    }
+
+    .entity-card.rarity-4 {
+      --entity-color: var(--violet);
+      border-top-color: var(--violet);
+    }
+
+    .entity-card.element-fuego {
+      --entity-color: #FB7185;
+    }
+
+    .entity-card.element-hielo {
+      --entity-color: #38BDF8;
+    }
+
+    .entity-card.element-rayo {
+      --entity-color: #FBBF24;
+    }
+
+    .entity-card.element-tierra {
+      --entity-color: #A3A36B;
+    }
+
+    .entity-card.element-viento {
+      --entity-color: #4ADE80;
+    }
+
+    .entity-card.monster-legendario {
+      --entity-color: var(--gold);
+      border-top-color: var(--gold);
+      background: linear-gradient(155deg, #39321F, #1C1D2A 75%);
+    }
+
+    .entity-card.monster-normal {
+      --entity-color: var(--cyan);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .card-name {
+      font-size: 17px;
+      line-height: 1.3;
+      font-weight: 850;
+      overflow-wrap: anywhere;
+    }
+
+    .card-number {
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: .08em;
+      margin-bottom: 4px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border: 1px solid var(--entity-color);
+      border-radius: 5px;
+      color: var(--entity-color);
+      background: rgba(15, 23, 42, .65);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
+
+    .tag.gold {
+      --entity-color: var(--gold);
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(251, 191, 36, .09);
+    }
+
+    .tag.violet {
+      --entity-color: #A78BFA;
+      border-color: #A78BFA;
+      color: #C4B5FD;
+      background: rgba(139, 92, 246, .1);
+    }
+
+    .tag.cyan {
+      --entity-color: var(--cyan);
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    .card-divider {
+      height: 1px;
+      background: rgba(148, 163, 184, .15);
+      margin: 12px 0;
+    }
+
+    .card-details {
+      display: grid;
+      gap: 9px;
+    }
+
+    .detail {
+      display: grid;
+      grid-template-columns: minmax(80px, .8fr) minmax(0, 1.2fr);
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .detail-label {
+      color: var(--muted);
+      text-transform: capitalize;
+    }
+
+    .detail-value {
+      color: #E2E8F0;
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    .card-footer {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    /* TABLAS PARA LAS OTRAS CATEGORÍAS */
+
+    .tablewrap {
+      overflow: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 650px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 14px 17px;
+      border-bottom: 1px solid #29364A;
+      vertical-align: top;
+      max-width: 420px;
+      overflow-wrap: anywhere;
+    }
+
+    th {
+      color: var(--cyan);
+      font-size: 10px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      background: #1E293B;
+      font-weight: 900;
+    }
+
+    td {
+      color: #E2E8F0;
+      font-size: 13px;
+    }
+
+    tbody tr {
+      transition: background .15s ease;
+    }
+
+    tbody tr:hover {
+      background: rgba(56, 189, 248, .06);
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    /* PIE */
+
+    footer {
+      padding: 22px 0 36px;
+      color: #718096;
+      font-size: 11px;
+      border-top: 1px solid var(--line);
+      text-align: center;
+      letter-spacing: .04em;
+    }
+
+    footer code {
+      color: var(--cyan);
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 850px) {
+      .stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 600px) {
+      .wrap {
+        width: min(100% - 24px, 1240px);
+      }
+
+      .top {
+        padding-top: 34px;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+      }
+
+      .stat {
+        padding: 13px;
+      }
+
+      .stat strong {
+        font-size: 25px;
+      }
+
+      .toolbar {
+        align-items: stretch;
+      }
+
+      .tabs {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .tab {
+        padding: 10px 7px;
+      }
+
+      input {
+        width: 100%;
+      }
+
+      .panelhead {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .cards-grid {
+        grid-template-columns: 1fr;
+        padding: 13px;
+      }
+    }
   </style>
 </head>
+
 <body>
-  <header class="top"><div class="wrap">
-    <div class="eyebrow">Mongil · Star Dive</div>
-    <h1>Mongil Database</h1>
-    <p class="sub">Una base de datos organizada para consultar personajes, artefactos, monsterlings, equipamientos y regiones.</p>
-    <div class="status" id="status"><span class="dot"></span><span>Conectando con la base de datos…</span></div>
-  </div></header>
+
+  <header class="top">
+    <div class="wrap">
+      <div class="eyebrow">Mongil · Star Dive</div>
+
+      <h1>Mongil Database</h1>
+
+      <p class="sub">
+        Explora personajes, artefactos, monsterlings,
+        equipamientos y regiones.
+      </p>
+
+      <div class="status" id="status">
+        <span class="dot"></span>
+        <span>Conectando con la base de datos…</span>
+      </div>
+    </div>
+  </header>
+
   <main class="wrap">
+
     <section class="stats" id="stats" aria-label="Resumen de registros"></section>
+
     <div class="toolbar">
       <nav class="tabs" id="tabs" aria-label="Categorías"></nav>
-      <input id="search" type="search" placeholder="Buscar en esta categoría…" aria-label="Buscar">
+
+      <input
+        id="search"
+        type="search"
+        placeholder="Buscar en esta categoría…"
+        aria-label="Buscar"
+      >
     </div>
+
     <section class="panel">
-      <div class="panelhead"><h2 id="sectionTitle">Personajes</h2><span class="count" id="resultCount"></span></div>
-      <div id="content"><div class="empty">Cargando registros…</div></div>
+
+      <div class="panelhead">
+        <h2 id="sectionTitle">Personajes</h2>
+        <span class="count" id="resultCount"></span>
+      </div>
+
+      <div id="content">
+        <div class="empty">Cargando registros…</div>
+      </div>
+
     </section>
+
   </main>
-  <footer><div class="wrap">Mongil Database · Los datos se cargan desde <code>data/mongil_database.json</code>.</div></footer>
-<script>
-(() => {
-  const categories = [
-    {key:'personajes',label:'Personajes'},
-    {key:'artefactos',label:'Artefactos'},
-    {key:'monsterlings',label:'Monsterlings'},
-    {key:'conjuntos',label:'Equipamiento'},
-    {key:'regiones',label:'Regiones'}
-  ];
-  let database = {};
-  let active = 'personajes';
-  const $ = id => document.getElementById(id);
-  const safe = value => {
-    if (value === null || value === undefined || value === '') return '—';
-    if (typeof value === 'object') return JSON.stringify(value);
-    return String(value);
-  };
-  const recordsFor = key => Array.isArray(database[key]) ? database[key] : [];
-  function renderStats() {
-    $('stats').innerHTML = categories.map(c =>
-      '<div class="stat"><strong>' + recordsFor(c.key).length + '</strong><span>' + c.label + '</span></div>'
-    ).join('');
-  }
-  function renderTabs() {
-    $('tabs').innerHTML = categories.map(c =>
-      '<button class="tab" type="button" data-key="' + c.key + '" aria-pressed="' + (active === c.key) + '">' + c.label + '</button>'
-    ).join('');
-    $('tabs').querySelectorAll('button').forEach(button => button.addEventListener('click', () => {
-      active = button.dataset.key; renderTabs(); renderTable();
-    }));
-  }
-  function renderTable() {
-    const category = categories.find(c => c.key === active);
-    $('sectionTitle').textContent = category ? category.label : 'Registros';
-    const query = $('search').value.trim().toLocaleLowerCase('es');
-    const rows = recordsFor(active).filter(row => JSON.stringify(row).toLocaleLowerCase('es').includes(query));
-    $('resultCount').textContent = rows.length + (rows.length === 1 ? ' registro' : ' registros');
-    if (!rows.length) {
-      $('content').innerHTML = '<div class="empty">' + (recordsFor(active).length ? 'No hay resultados para esa búsqueda.' : 'Todavía no hay registros publicados en esta categoría.') + '</div>';
-      return;
-    }
-    const keys = [...new Set(rows.flatMap(row => row && typeof row === 'object' ? Object.keys(row) : ['valor']))];
-    const head = keys.map(k => '<th>' + escapeHtml(k.replaceAll('_',' ')) + '</th>').join('');
-    const body = rows.map(row => '<tr>' + keys.map(k => '<td>' + escapeHtml(safe(row && typeof row === 'object' ? row[k] : row)) + '</td>').join('') + '</tr>').join('');
-    $('content').innerHTML = '<div class="tablewrap"><table><thead><tr>' + head + '</tr></thead><tbody>' + body + '</tbody></table></div>';
-  }
-  function escapeHtml(value) {
-    return String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-  }
-  $('search').addEventListener('input', renderTable);
-  fetch('./data/mongil_database.json', {cache:'no-store'})
-    .then(response => { if (!response.ok) throw new Error('HTTP ' + response.status); return response.json(); })
-    .then(data => {
-      database = data || {};
-      renderStats(); renderTabs(); renderTable();
-      const provisional = database.estado === 'provisional' || database.provisional === true;
-      $('status').innerHTML = '<span class="dot ' + (provisional ? '' : 'live') + '"></span><span>' +
-        (provisional ? 'Estructura inicial · esperando los datos reales de Google Sheets' : 'Datos cargados correctamente') + '</span>';
-    })
-    .catch(error => {
-      $('status').innerHTML = '<span class="dot"></span><span class="error">No se pudo cargar el JSON: ' + escapeHtml(error.message) + '</span>';
-      $('stats').innerHTML = ''; $('content').innerHTML = '<div class="empty error">Revisa que exista data/mongil_database.json y que contenga JSON válido.</div>';
-    });
-})();
-</script>
+
+  <footer>
+    <div class="wrap">
+      Mongil Database · Los datos se cargan desde
+      <code>data/mongil_database.json</code>.
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+
+      const categories = [
+        { key: 'personajes', label: 'Personajes' },
+        { key: 'artefactos', label: 'Artefactos' },
+        { key: 'monsterlings', label: 'Monsterlings' },
+        { key: 'conjuntos', label: 'Equipamiento' },
+        { key: 'regiones', label: 'Regiones' }
+      ];
+
+      let database = {};
+      let active = 'personajes';
+
+      const $ = id => document.getElementById(id);
+
+      const recordsFor = key =>
+        Array.isArray(database[key]) ? database[key] : [];
+
+      function safe(value) {
+        if (value === null || value === undefined || value === '') {
+          return '—';
+        }
+
+        if (typeof value === 'object') {
+          return JSON.stringify(value);
+        }
+
+        return String(value);
+      }
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, character => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        }[character]));
+      }
+
+      function normalize(value) {
+        return String(value ?? '')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase()
+          .trim()
+          .replace(/[\s_-]+/g, '');
+      }
+
+      function getField(record, possibleNames) {
+        if (!record || typeof record !== 'object') {
+          return undefined;
+        }
+
+        const keys = Object.keys(record);
+
+        for (const possibleName of possibleNames) {
+          const match = keys.find(key =>
+            normalize(key) === normalize(possibleName)
+          );
+
+          if (match !== undefined && record[match] !== '') {
+            return record[match];
+          }
+        }
+
+        return undefined;
+      }
+
+      function renderStats() {
+        $('stats').innerHTML = categories.map(category =>
+          '<div class="stat">' +
+            '<strong>' + recordsFor(category.key).length + '</strong>' +
+            '<span>' + escapeHtml(category.label) + '</span>' +
+          '</div>'
+        ).join('');
+      }
+
+      function renderTabs() {
+        $('tabs').innerHTML = categories.map(category =>
+          '<button class="tab" type="button" data-key="' +
+            escapeHtml(category.key) +
+            '" aria-pressed="' + (active === category.key) + '">' +
+            escapeHtml(category.label) +
+          '</button>'
+        ).join('');
+
+        $('tabs').querySelectorAll('button').forEach(button => {
+          button.addEventListener('click', () => {
+            active = button.dataset.key;
+            renderTabs();
+            renderTable();
+          });
+        });
+      }
+
+      function getElementClass(record) {
+        const element = normalize(
+          getField(record, ['elemento', 'element'])
+        );
+
+        const classes = {
+          fuego: 'element-fuego',
+          hielo: 'element-hielo',
+          rayo: 'element-rayo',
+          tierra: 'element-tierra',
+          viento: 'element-viento'
+        };
+
+        return classes[element] || '';
+      }
+
+      function getRarityClass(record) {
+        const grade = String(
+          getField(record, ['grado', 'rareza', 'rarity']) ?? ''
+        ).trim();
+
+        if (grade === '5') return 'rarity-5';
+        if (grade === '4') return 'rarity-4';
+
+        return '';
+      }
+
+      function getRarityTag(record) {
+        const grade = getField(record, ['grado', 'rareza', 'rarity']);
+
+        if (grade === undefined) {
+          return '';
+        }
+
+        const gradeText = escapeHtml(safe(grade));
+
+        if (String(grade).trim() === '5') {
+          return '<span class="tag gold">★ ' + gradeText + '</span>';
+        }
+
+        if (String(grade).trim() === '4') {
+          return '<span class="tag violet">★ ' + gradeText + '</span>';
+        }
+
+        return '<span class="tag cyan">' + gradeText + '</span>';
+      }
+
+      function getMonsterClass(record) {
+        const type = normalize(
+          getField(record, ['tipo', 'type'])
+        );
+
+        if (type === 'legendario' || type === 'legendary') {
+          return 'monster-legendario';
+        }
+
+        return 'monster-normal';
+      }
+
+      function getMonsterTag(record) {
+        const type = getField(record, ['tipo', 'type']);
+
+        if (type === undefined) {
+          return '';
+        }
+
+        const normalized = normalize(type);
+
+        if (normalized === 'legendario' || normalized === 'legendary') {
+          return '<span class="tag gold">★ Legendario</span>';
+        }
+
+        return '<span class="tag cyan">' +
+          escapeHtml(safe(type)) +
+          '</span>';
+      }
+
+      function getRecordName(record, category) {
+        let name;
+
+        if (category === 'personajes') {
+          name = getField(record, ['nombre', 'name']);
+        } else if (category === 'monsterlings') {
+          name = getField(record, ['nombre', 'name']);
+        }
+
+        if (name === undefined) {
+          name = getField(record, ['nombre', 'name', 'numero', 'id']);
+        }
+
+        return name === undefined ? 'Sin nombre' : safe(name);
+      }
+
+      function renderEntityCard(record, category) {
+        const isMonster = category === 'monsterlings';
+
+        const name = getRecordName(record, category);
+        const number = getField(record, ['numero', 'id']);
+        const element = getField(record, ['elemento', 'element']);
+        const grade = getField(record, ['grado', 'rareza', 'rarity']);
+
+        const classNames = isMonster
+          ? getMonsterClass(record)
+          : [getRarityClass(record), getElementClass(record)]
+              .filter(Boolean).join(' ');
+
+        const knownFields = isMonster
+          ? ['nombre', 'name', 'numero', 'id', 'tipo', 'type']
+          : ['nombre', 'name', 'grado', 'rareza', 'rarity',
+             'elemento', 'element', 'id'];
+
+        const details = Object.entries(record || {})
+          .filter(([key, value]) =>
+            !knownFields.some(known => normalize(known) === normalize(key)) &&
+            value !== '' &&
+            value !== null &&
+            value !== undefined
+          )
+          .map(([key, value]) =>
+            '<div class="detail">' +
+              '<span class="detail-label">' +
+                escapeHtml(key.replace(/[_-]/g, ' ')) +
+              '</span>' +
+              '<span class="detail-value">' +
+                escapeHtml(safe(value)) +
+              '</span>' +
+            '</div>'
+          )
+          .join('');
+
+        const mainTag = isMonster
+          ? getMonsterTag(record)
+          : getRarityTag(record);
+
+        const elementTag = !isMonster && element !== undefined
+          ? '<span class="tag cyan">' +
+              escapeHtml(safe(element)) +
+            '</span>'
+          : '';
+
+        const numberHtml = number !== undefined
+          ? '<div class="card-number">N.º ' +
+              escapeHtml(safe(number)) +
+            '</div>'
+          : '';
+
+        return (
+          '<article class="entity-card ' + classNames + '">' +
+
+            '<div class="card-top">' +
+              '<div>' +
+                numberHtml +
+                '<div class="card-name">' +
+                  escapeHtml(name) +
+                '</div>' +
+              '</div>' +
+
+              '<div>' + mainTag + '</div>' +
+            '</div>' +
+
+            '<div class="card-divider"></div>' +
+
+            '<div class="card-details">' +
+              (details ||
+                '<div class="detail">' +
+                  '<span class="detail-label">Información</span>' +
+                  '<span class="detail-value">Sin detalles adicionales</span>' +
+                '</div>'
+              ) +
+            '</div>' +
+
+            '<div class="card-footer">' +
+              elementTag +
+              (grade !== undefined && isMonster
+                ? '<span class="tag gold">' +
+                    escapeHtml(safe(grade)) +
+                  '</span>'
+                : '') +
+            '</div>' +
+
+          '</article>'
+        );
+      }
+
+      function renderCards(rows, category) {
+        if (!rows.length) {
+          return (
+            '<div class="empty">' +
+              'Todavía no hay registros publicados en esta categoría.' +
+            '</div>'
+          );
+        }
+
+        return (
+          '<div class="cards-grid">' +
+            rows.map(record =>
+              renderEntityCard(record, category)
+            ).join('') +
+          '</div>'
+        );
+      }
+
+      function renderTableRows(rows) {
+        if (!rows.length) {
+          return (
+            '<div class="empty">' +
+              'Todavía no hay registros publicados en esta categoría.' +
+            '</div>'
+          );
+        }
+
+        const keys = [
+          ...new Set(
+            rows.flatMap(row =>
+              row && typeof row === 'object'
+                ? Object.keys(row)
+                : ['valor']
+            )
+          )
+        ];
+
+        const head = keys.map(key =>
+          '<th>' +
+            escapeHtml(key.replaceAll('_', ' ')) +
+          '</th>'
+        ).join('');
+
+        const body = rows.map(row =>
+          '<tr>' +
+            keys.map(key =>
+              '<td>' +
+                escapeHtml(
+                  safe(row && typeof row === 'object' ? row[key] : row)
+                ) +
+              '</td>'
+            ).join('') +
+          '</tr>'
+        ).join('');
+
+        return (
+          '<div class="tablewrap">' +
+            '<table>' +
+              '<thead><tr>' + head + '</tr></thead>' +
+              '<tbody>' + body + '</tbody>' +
+            '</table>' +
+          '</div>'
+        );
+      }
+
+      function renderTable() {
+        const category = categories.find(item => item.key === active);
+
+        $('sectionTitle').textContent =
+          category ? category.label : 'Registros';
+
+        const query = $('search').value.trim().toLocaleLowerCase('es');
+
+        const rows = recordsFor(active).filter(row =>
+          JSON.stringify(row).toLocaleLowerCase('es').includes(query)
+        );
+
+        $('resultCount').textContent =
+          rows.length + (rows.length === 1 ? ' registro' : ' registros');
+
+        if (active === 'personajes' || active === 'monsterlings') {
+          $('content').innerHTML = renderCards(rows, active);
+        } else {
+          $('content').innerHTML = renderTableRows(rows);
+        }
+      }
+
+      $('search').addEventListener('input', renderTable);
+
+      fetch('./data/mongil_database.json', { cache: 'no-store' })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('HTTP ' + response.status);
+          }
+
+          return response.json();
+        })
+        .then(data => {
+          database = data || {};
+
+          renderStats();
+          renderTabs();
+          renderTable();
+
+          const provisional =
+            database.estado === 'provisional' ||
+            database.provisional === true;
+
+          $('status').innerHTML =
+            '<span class="dot ' +
+              (provisional ? '' : 'live') +
+            '"></span>' +
+            '<span>' +
+              (provisional
+                ? 'Estructura inicial · esperando los datos reales de Google Sheets'
+                : 'Datos cargados correctamente') +
+            '</span>';
+        })
+        .catch(error => {
+          $('status').innerHTML =
+            '<span class="dot"></span>' +
+            '<span class="error">No se pudo cargar el JSON: ' +
+              escapeHtml(error.message) +
+            '</span>';
+
+          $('stats').innerHTML = '';
+
+          $('content').innerHTML =
+            '<div class="empty error">' +
+              'Revisa que exista data/mongil_database.json y que contenga JSON válido.' +
+            '</div>';
+        });
+
+    })();
+  </script>
+
 </body>
 </html>
