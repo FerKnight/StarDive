@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-11-19T03:45:18.667Z",
+  "generatedAt": "2026-11-19T03:50:15.849Z",
   "personajes": [
     {
       "id": "angel",
@@ -594,14 +594,6 @@
       "Sub estadistica": "ATQ 27%",
       "efecto de habilidad": "Atacar a un enemigo con Afliccion de fue concede Oda a las explosiones.\nOda a las explosiones\nAumenta el daño de fuego un 3,6 % y el daño de la habilidad especial un 12%. (Acumulucaiones maximas10m, Duracion: 15 s, las nuevas acumulaciones reinicial la duracion)\nUsar una habilidad especial aumenta el daño de habilidad de apoyo un 80% (Duracion: 15 s.)",
       "personaje_propio": "M.A.D."
-    },
-    {
-      "nombre": "prueba",
-      "grado": "5",
-      "rol": "Apoyo",
-      "Sub estadistica": "atqsi",
-      "efecto de habilidad": "prueba",
-      "personaje_propio": ""
     }
   ],
   "monsterlings": [
@@ -2164,14 +2156,6 @@
       "region": "Sector 3",
       "efecto de rango": "",
       "enlace": ""
-    },
-    {
-      "numero": "999",
-      "nombre": "prueba",
-      "tipo": "normal",
-      "region": "Elendor",
-      "efecto de rango": "si",
-      "enlace": ""
     }
   ],
   "regiones": [
@@ -2904,42 +2888,6 @@
           "conjunto": "Ejecutor Sangreferrea",
           "pieza": "guantes",
           "efecto_pieza": "",
-          "donde_conseguir": ""
-        }
-      ]
-    },
-    {
-      "id": "prueba",
-      "nombre": "prueba",
-      "efecto_2_piezas": "prueba1",
-      "efecto_4_piezas": "prueba1",
-      "piezas": [
-        {
-          "conjunto_id": "prueba",
-          "conjunto": "prueba",
-          "pieza": "casco",
-          "efecto_pieza": "prueba1",
-          "donde_conseguir": ""
-        },
-        {
-          "conjunto_id": "prueba",
-          "conjunto": "prueba",
-          "pieza": "pechera",
-          "efecto_pieza": "prueba1",
-          "donde_conseguir": ""
-        },
-        {
-          "conjunto_id": "prueba",
-          "conjunto": "prueba",
-          "pieza": "guantes",
-          "efecto_pieza": "prueba2",
-          "donde_conseguir": ""
-        },
-        {
-          "conjunto_id": "prueba",
-          "conjunto": "prueba",
-          "pieza": "calzado",
-          "efecto_pieza": "prueba2",
           "donde_conseguir": ""
         }
       ]
