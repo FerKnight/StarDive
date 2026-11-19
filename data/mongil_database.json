@@ -1,1 +1,12 @@
-a
+{
+  "version": 1,
+  "estado": "provisional",
+  "provisional": true,
+  "generatedAt": null,
+  "mensaje": "Estructura inicial. Los datos reales se publicarán desde Google Sheets mediante Apps Script.",
+  "personajes": [],
+  "artefactos": [],
+  "monsterlings": [],
+  "regiones": [],
+  "conjuntos": []
+}
