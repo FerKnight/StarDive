@@ -168,8 +168,6 @@
 
     #search{width:min(360px,100%)}
 
-    /* Barra de filtros */
-
     .filter-bar{
       display:flex;
       align-items:center;
@@ -217,6 +215,12 @@
       max-width:210px;
       padding:8px 10px;
       font-size:12px
+    }
+
+    .filter-item select[multiple]{
+      min-width:150px;
+      min-height:78px;
+      max-height:110px
     }
 
     .filter-item input{width:190px}
@@ -314,6 +318,8 @@
       box-shadow:0 8px 28px color-mix(in srgb,var(--entity-color) 13%,transparent)
     }
 
+    /* El borde superior representa el grado del personaje. */
+
     .rarity-5{
       --entity-color:var(--gold);
       border-top-color:var(--gold);
@@ -325,11 +331,13 @@
       border-top-color:var(--violet)
     }
 
-    .element-fuego{--entity-color:#FB7185}
-    .element-hielo{--entity-color:#38BDF8}
-    .element-rayo{--entity-color:#FBBF24}
-    .element-tierra{--entity-color:#A3A36B}
-    .element-viento{--entity-color:#4ADE80}
+    /* Colores de los elementos, independientes del grado. */
+
+    .element-fuego{--element-color:#FB7185}
+    .element-hielo{--element-color:#38BDF8}
+    .element-viento{--element-color:#7DD3FC}
+    .element-tierra{--element-color:#4ADE80}
+    .element-rayo{--element-color:#C084FC}
 
     .monster-legendario{
       --entity-color:var(--gold);
@@ -337,12 +345,56 @@
       background:linear-gradient(155deg,#39321F,#1C1D2A 75%)
     }
 
-    .card-top{
+    .character-card{
       display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:10px;
-      margin-bottom:14px
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+      min-height:250px;
+      padding:16px 14px 18px
+    }
+
+    .character-image-wrap{
+      width:100%;
+      height:175px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin-bottom:12px;
+      position:relative;
+      z-index:1
+    }
+
+    .character-image{
+      display:block;
+      max-width:100%;
+      max-height:100%;
+      width:auto;
+      height:auto;
+      object-fit:contain;
+      filter:drop-shadow(0 8px 12px rgba(0,0,0,.35))
+    }
+
+    .character-image-placeholder{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:112px;
+      height:112px;
+      border:1px dashed var(--line);
+      border-radius:50%;
+      color:var(--muted);
+      font-size:11px
+    }
+
+    .character-name-row{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:8px;
+      position:relative;
+      z-index:1
     }
 
     .card-name{
@@ -352,11 +404,26 @@
       overflow-wrap:anywhere
     }
 
-    .card-number{
-      color:var(--muted);
+    .element-label{
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      padding:3px 8px;
+      border:1px solid var(--element-color,var(--line));
+      border-radius:5px;
+      color:var(--element-color,var(--muted));
+      background:rgba(15,23,42,.65);
       font-size:10px;
-      letter-spacing:.08em;
-      margin-bottom:4px
+      font-weight:850;
+      white-space:nowrap
+    }
+
+    .element-dot{
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:var(--element-color,var(--muted));
+      box-shadow:0 0 7px var(--element-color,var(--muted))
     }
 
     .tag{
@@ -376,12 +443,6 @@
       border-color:var(--gold);
       color:var(--gold);
       background:rgba(251,191,36,.09)
-    }
-
-    .tag.violet{
-      border-color:#A78BFA;
-      color:#C4B5FD;
-      background:rgba(139,92,246,.1)
     }
 
     .card-divider{
@@ -422,7 +483,7 @@
       text-align:left;
       padding:14px 17px;
       border-bottom:1px solid #29364A;
-      vertical-align:top;
+      vertical-align:middle;
       max-width:420px;
       overflow-wrap:anywhere
     }
@@ -439,6 +500,33 @@
     td{color:#E2E8F0;font-size:13px}
     tbody tr:hover{background:rgba(56,189,248,.06)}
     tr:last-child td{border-bottom:0}
+
+    .artifact-image-cell{
+      width:76px;
+      min-width:76px;
+      text-align:center
+    }
+
+    .artifact-image{
+      display:block;
+      width:54px;
+      height:54px;
+      margin:auto;
+      object-fit:contain;
+      filter:drop-shadow(0 4px 8px rgba(0,0,0,.35))
+    }
+
+    .artifact-image-placeholder{
+      display:inline-flex;
+      width:46px;
+      height:46px;
+      align-items:center;
+      justify-content:center;
+      border:1px dashed var(--line);
+      border-radius:8px;
+      color:var(--muted);
+      font-size:9px
+    }
 
     .install-banner{
       display:none;
@@ -551,6 +639,7 @@
         max-width:none;
         min-width:0
       }
+      .filter-item select[multiple]{min-height:90px}
       .filter-reset{width:100%}
       .install-banner.visible{align-items:stretch}
       .install-actions{width:100%}
@@ -640,8 +729,8 @@
       const filterDefinitions = {
         personajes: [
           {field:'grado',label:'Grado',aliases:['grado','rareza','rarity']},
-          {field:'elemento',label:'Elemento',aliases:['elemento','element']},
-          {field:'tipo',label:'Tipo',aliases:['tipo','type']},
+          {field:'elemento',label:'Elemento',aliases:['elemento','element'],multiple:true},
+          {field:'tipo',label:'Tipo',aliases:['tipo','type'],multiple:true},
           {field:'rango',label:'Rango',aliases:['rango','rank']}
         ],
         artefactos: [
@@ -725,10 +814,25 @@
       function getDisplayRows(key){
         const rows = recordsFor(key);
 
-        // Monsterlings conserva el orden original de la base de datos.
         if(key === 'monsterlings') return [...rows];
 
         return sortAlphabetically(rows);
+      }
+
+      // Convierte el nombre en el nombre de archivo esperado.
+      // Ejemplo: "Caída en desgracia" -> "caida_en_desgracia.png"
+      function imageFileName(name){
+        return String(name ?? '')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g,'')
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9]+/g,'_')
+          .replace(/^_+|_+$/g,'') + '.png';
+      }
+
+      function imagePath(category,name){
+        return './img/' + category + '/' + imageFileName(name);
       }
 
       function renderTabs(){
@@ -778,20 +882,49 @@
         })[element] || '';
       }
 
-      function renderCard(record,category){
-        const monster = category === 'monsterlings';
+      function renderCharacterCard(record){
+        const name = getField(record,['nombre','name']) ?? 'Sin nombre';
+        const element = getField(record,['elemento','element']);
+        const image = imagePath('personajes',name);
+        const elementClassName = elementClass(record);
+
+        return (
+          '<article class="entity-card character-card ' +
+            rarityClass(record) + ' ' + elementClassName + '">' +
+
+            '<div class="character-image-wrap">' +
+              '<img class="character-image" ' +
+                'src="' + escapeHtml(image) + '" ' +
+                'alt="' + escapeHtml(name) + '" ' +
+                'loading="lazy" ' +
+                'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
+              '<div class="character-image-placeholder" style="display:none">Sin imagen</div>' +
+            '</div>' +
+
+            '<div class="character-name-row">' +
+              '<span class="card-name">' + escapeHtml(name) + '</span>' +
+              (element !== undefined
+                ? '<span class="element-label">' +
+                    '<span class="element-dot"></span>' +
+                    escapeHtml(safe(element)) +
+                  '</span>'
+                : '') +
+            '</div>' +
+
+          '</article>'
+        );
+      }
+
+      function renderMonsterCard(record){
         const name = getField(record,['nombre','name','numero','id']) ?? 'Sin nombre';
         const number = getField(record,['numero','id']);
-        const grade = getField(record,['grado','rareza','rarity']);
         const type = getField(record,['tipo','type']);
 
-        const klass = monster
-          ? (normalize(type) === 'legendario' ? 'monster-legendario' : '')
-          : rarityClass(record) + ' ' + elementClass(record);
+        const klass = normalize(type) === 'legendario'
+          ? 'monster-legendario'
+          : '';
 
-        const known = monster
-          ? ['nombre','name','numero','id','tipo','type']
-          : ['nombre','name','grado','rareza','rarity','elemento','element','id'];
+        const known = ['nombre','name','numero','id','tipo','type'];
 
         const details = Object.entries(record || {})
           .filter(([key,value]) =>
@@ -811,27 +944,6 @@
             '</div>'
           ).join('');
 
-        let tag = '';
-
-        if(monster && type !== undefined){
-          tag =
-            '<span class="tag ' +
-            (normalize(type) === 'legendario' ? 'gold' : '') +
-            '">' +
-            escapeHtml(safe(type)) +
-            '</span>';
-        }else if(grade !== undefined){
-          tag =
-            '<span class="tag ' +
-            (String(grade) === '5' ? 'gold' : String(grade) === '4' ? 'violet' : '') +
-            '">' +
-            (String(grade) === '5' ? '★ ' : '') +
-            escapeHtml(safe(grade)) +
-            '</span>';
-        }
-
-        const element = getField(record,['elemento','element']);
-
         return (
           '<article class="entity-card ' + klass + '">' +
             '<div class="card-top">' +
@@ -841,13 +953,14 @@
                   : '') +
                 '<div class="card-name">' + escapeHtml(safe(name)) + '</div>' +
               '</div>' +
-              tag +
+              (type !== undefined
+                ? '<span class="tag ' +
+                    (normalize(type) === 'legendario' ? 'gold' : '') +
+                    '">' + escapeHtml(safe(type)) + '</span>'
+                : '') +
             '</div>' +
             (details
               ? '<div class="card-divider"></div><div class="card-details">' + details + '</div>'
-              : '') +
-            (element !== undefined
-              ? '<div class="card-divider"></div><span class="tag">' + escapeHtml(safe(element)) + '</span>'
               : '') +
           '</article>'
         );
@@ -860,15 +973,21 @@
 
         return (
           '<div class="cards-grid">' +
-          rows.map(record => renderCard(record,category)).join('') +
+          rows.map(record =>
+            category === 'personajes'
+              ? renderCharacterCard(record)
+              : renderMonsterCard(record)
+          ).join('') +
           '</div>'
         );
       }
 
-      function renderTable(rows){
+      function renderTable(rows,category){
         if(!rows.length){
           return '<div class="empty">Todavía no hay registros publicados en esta categoría.</div>';
         }
+
+        const isArtifact = category === 'artefactos';
 
         const keys = [
           ...new Set(
@@ -880,19 +999,38 @@
           )
         ];
 
-        const head = keys.map(key =>
-          '<th>' + escapeHtml(key.replaceAll('_',' ')) + '</th>'
-        ).join('');
-
-        const body = rows.map(row =>
-          '<tr>' +
+        const head =
+          (isArtifact ? '<th class="artifact-image-cell">Imagen</th>' : '') +
           keys.map(key =>
-            '<td>' +
-            escapeHtml(safe(row && typeof row === 'object' ? row[key] : row)) +
-            '</td>'
-          ).join('') +
-          '</tr>'
-        ).join('');
+            '<th>' + escapeHtml(key.replaceAll('_',' ')) + '</th>'
+          ).join('');
+
+        const body = rows.map(row => {
+          const name = getField(row,['nombre','name']) ?? '';
+          const image = imagePath('artefactos',name);
+
+          const imageCell = isArtifact
+            ? '<td class="artifact-image-cell">' +
+                '<img class="artifact-image" ' +
+                  'src="' + escapeHtml(image) + '" ' +
+                  'alt="' + escapeHtml(name) + '" ' +
+                  'loading="lazy" ' +
+                  'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'inline-flex\'">' +
+                '<span class="artifact-image-placeholder" style="display:none">Sin imagen</span>' +
+              '</td>'
+            : '';
+
+          return (
+            '<tr>' +
+              imageCell +
+              keys.map(key =>
+                '<td>' +
+                  escapeHtml(safe(row && typeof row === 'object' ? row[key] : row)) +
+                '</td>'
+              ).join('') +
+            '</tr>'
+          );
+        }).join('');
 
         return (
           '<div class="tablewrap">' +
@@ -913,7 +1051,6 @@
           return filterDefinitions[active];
         }
 
-        // Para categorías futuras, se generan filtros según sus campos.
         const rows = recordsFor(
           categories.find(category => category.key === active)?.dataKey || active
         );
@@ -978,9 +1115,33 @@
 
         controls.innerHTML = definitions.map(definition => {
           const options = getFilterOptions(rows,definition);
-          const current = filterState[active][definition.field] || '';
+          const current = filterState[active][definition.field] || [];
 
           if(!options.length) return '';
+
+          if(definition.multiple){
+            const selectedValues = Array.isArray(current) ? current : [];
+
+            return (
+              '<div class="filter-item">' +
+                '<label for="filter-' + escapeHtml(definition.field) + '">' +
+                  escapeHtml(definition.label) +
+                '</label>' +
+                '<select multiple size="3" ' +
+                  'id="filter-' + escapeHtml(definition.field) + '" ' +
+                  'data-filter-field="' + escapeHtml(definition.field) + '" ' +
+                  'aria-label="Seleccionar uno o varios valores de ' + escapeHtml(definition.label) + '">' +
+                  options.map(option =>
+                    '<option value="' + escapeHtml(option) + '"' +
+                    (selectedValues.includes(option) ? ' selected' : '') +
+                    '>' + escapeHtml(option) + '</option>'
+                  ).join('') +
+                '</select>' +
+              '</div>'
+            );
+          }
+
+          const selectedValue = Array.isArray(current) ? current[0] || '' : current;
 
           return (
             '<div class="filter-item">' +
@@ -992,7 +1153,7 @@
                 '<option value="">Todos</option>' +
                 options.map(option =>
                   '<option value="' + escapeHtml(option) + '"' +
-                  (current === option ? ' selected' : '') +
+                  (selectedValue === option ? ' selected' : '') +
                   '>' + escapeHtml(option) + '</option>'
                 ).join('') +
               '</select>' +
@@ -1002,7 +1163,17 @@
 
         controls.querySelectorAll('select').forEach(select => {
           select.addEventListener('change',() => {
-            filterState[active][select.dataset.filterField] = select.value;
+            const definition = definitions.find(item =>
+              item.field === select.dataset.filterField
+            );
+
+            if(definition?.multiple){
+              filterState[active][select.dataset.filterField] =
+                [...select.selectedOptions].map(option => option.value);
+            }else{
+              filterState[active][select.dataset.filterField] = select.value;
+            }
+
             renderContent();
           });
         });
@@ -1016,11 +1187,25 @@
           definitions.every(definition => {
             const selectedValue = selected[definition.field];
 
-            if(!selectedValue) return true;
+            if(
+              selectedValue === undefined ||
+              selectedValue === '' ||
+              (Array.isArray(selectedValue) && selectedValue.length === 0)
+            ){
+              return true;
+            }
 
-            const recordValue = getFilterValue(record,definition);
+            const recordValue = safe(getFilterValue(record,definition));
 
-            return safe(recordValue) === selectedValue;
+            if(definition.multiple){
+              const selectedValues = Array.isArray(selectedValue)
+                ? selectedValue
+                : [selectedValue];
+
+              return selectedValues.includes(recordValue);
+            }
+
+            return recordValue === selectedValue;
           })
         );
       }
@@ -1119,7 +1304,6 @@
           }
         }
 
-        // Reordenar los grupos después de incorporar registros relacionados.
         for(const group of groups){
           if(group.key !== 'monsterlings'){
             group.rows = sortAlphabetically(group.rows);
@@ -1139,7 +1323,7 @@
             '<h2 class="group-title">' + escapeHtml(group.label) + '</h2>' +
             (cards
               ? renderCards(group.rows,group.key)
-              : renderTable(group.rows)) +
+              : renderTable(group.rows,group.key)) +
           '</section>'
         );
       }
@@ -1163,7 +1347,6 @@
 
         let rows = getDisplayRows(dataKey);
 
-        // Los filtros se aplican solamente a la categoría seleccionada.
         rows = applyFilters(rows);
 
         const renderCategory =
@@ -1172,7 +1355,7 @@
 
         $('content').innerHTML = renderCategory
           ? renderCards(rows,active)
-          : renderTable(rows);
+          : renderTable(rows,active);
       }
 
       $('search').addEventListener('input',renderContent);
