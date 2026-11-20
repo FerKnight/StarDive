@@ -168,6 +168,8 @@
 
     #search{width:min(360px,100%)}
 
+    /* Barra de filtros */
+
     .filter-bar{
       display:flex;
       align-items:center;
@@ -200,30 +202,94 @@
     .filter-item{
       display:flex;
       align-items:center;
-      gap:6px
+      gap:6px;
+      position:relative
     }
 
-    .filter-item label{
+    .filter-item>label{
       color:var(--muted);
       font-size:11px;
       white-space:nowrap
     }
 
-    .filter-item select,
-    .filter-item input{
+    .filter-item>select{
       min-width:125px;
       max-width:210px;
       padding:8px 10px;
       font-size:12px
     }
 
-    .filter-item select[multiple]{
-      min-width:150px;
-      min-height:78px;
-      max-height:110px
+    .multi-filter{
+      position:relative
     }
 
-    .filter-item input{width:190px}
+    .multi-filter-button{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      min-width:150px;
+      max-width:220px;
+      padding:8px 10px;
+      border:1px solid var(--line);
+      border-radius:6px;
+      background:var(--panel);
+      color:var(--text);
+      font-size:12px;
+      cursor:pointer;
+      text-align:left
+    }
+
+    .multi-filter-button:hover,
+    .multi-filter-button[aria-expanded=true]{
+      border-color:var(--cyan)
+    }
+
+    .multi-filter-button .arrow{
+      color:var(--muted);
+      font-size:10px
+    }
+
+    .multi-filter-menu{
+      display:none;
+      position:absolute;
+      z-index:20;
+      top:calc(100% + 6px);
+      left:0;
+      min-width:190px;
+      max-height:260px;
+      overflow-y:auto;
+      padding:7px;
+      border:1px solid var(--line);
+      border-radius:8px;
+      background:#182235;
+      box-shadow:0 12px 30px rgba(0,0,0,.4)
+    }
+
+    .multi-filter-menu.open{display:block}
+
+    .multi-filter-option{
+      display:flex;
+      align-items:center;
+      gap:9px;
+      padding:8px;
+      border-radius:5px;
+      color:var(--text);
+      font-size:12px;
+      cursor:pointer
+    }
+
+    .multi-filter-option:hover{
+      background:rgba(56,189,248,.09)
+    }
+
+    .multi-filter-option input{
+      width:15px;
+      height:15px;
+      margin:0;
+      accent-color:var(--cyan);
+      cursor:pointer
+    }
 
     .filter-reset{
       border:1px solid var(--line);
@@ -318,7 +384,7 @@
       box-shadow:0 8px 28px color-mix(in srgb,var(--entity-color) 13%,transparent)
     }
 
-    /* El borde superior representa el grado del personaje. */
+    /* El borde superior identifica el grado. */
 
     .rarity-5{
       --entity-color:var(--gold);
@@ -331,10 +397,10 @@
       border-top-color:var(--violet)
     }
 
-    /* Colores de los elementos, independientes del grado. */
+    /* Colores de identificadores elementales. */
 
     .element-fuego{--element-color:#FB7185}
-    .element-hielo{--element-color:#38BDF8}
+    .element-hielo{--element-color:#2563EB}
     .element-viento{--element-color:#7DD3FC}
     .element-tierra{--element-color:#4ADE80}
     .element-rayo{--element-color:#C084FC}
@@ -345,46 +411,14 @@
       background:linear-gradient(155deg,#39321F,#1C1D2A 75%)
     }
 
+    /* Tarjetas de personajes */
+
     .character-card{
       display:flex;
       flex-direction:column;
       align-items:center;
       text-align:center;
-      min-height:250px;
-      padding:16px 14px 18px
-    }
-
-    .character-image-wrap{
-      width:100%;
-      height:175px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      margin-bottom:12px;
-      position:relative;
-      z-index:1
-    }
-
-    .character-image{
-      display:block;
-      max-width:100%;
-      max-height:100%;
-      width:auto;
-      height:auto;
-      object-fit:contain;
-      filter:drop-shadow(0 8px 12px rgba(0,0,0,.35))
-    }
-
-    .character-image-placeholder{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      width:112px;
-      height:112px;
-      border:1px dashed var(--line);
-      border-radius:50%;
-      color:var(--muted);
-      font-size:11px
+      padding:16px 15px 18px
     }
 
     .character-name-row{
@@ -393,6 +427,9 @@
       align-items:center;
       flex-wrap:wrap;
       gap:8px;
+      width:100%;
+      min-height:30px;
+      margin-bottom:10px;
       position:relative;
       z-index:1
     }
@@ -424,6 +461,67 @@
       border-radius:50%;
       background:var(--element-color,var(--muted));
       box-shadow:0 0 7px var(--element-color,var(--muted))
+    }
+
+    .character-image-wrap{
+      width:100%;
+      height:175px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin-bottom:12px;
+      position:relative;
+      z-index:1
+    }
+
+    .character-image{
+      display:block;
+      max-width:100%;
+      max-height:100%;
+      width:auto;
+      height:auto;
+      object-fit:contain;
+      filter:drop-shadow(0 8px 12px rgba(0,0,0,.35))
+    }
+
+    .character-image-placeholder{
+      display:none;
+      align-items:center;
+      justify-content:center;
+      width:112px;
+      height:112px;
+      border:1px dashed var(--line);
+      border-radius:50%;
+      color:var(--muted);
+      font-size:11px
+    }
+
+    .character-details{
+      display:grid;
+      gap:8px;
+      width:100%;
+      padding-top:12px;
+      border-top:1px solid rgba(148,163,184,.15);
+      text-align:left;
+      position:relative;
+      z-index:1
+    }
+
+    .character-detail{
+      display:grid;
+      grid-template-columns:85px minmax(0,1fr);
+      gap:8px;
+      font-size:12px
+    }
+
+    .character-detail-label{
+      color:var(--muted)
+    }
+
+    .character-detail-value{
+      color:#E2E8F0;
+      text-align:right;
+      overflow-wrap:anywhere
     }
 
     .tag{
@@ -471,6 +569,8 @@
       overflow-wrap:anywhere
     }
 
+    /* Tablas */
+
     .tablewrap{overflow:auto}
 
     table{
@@ -517,7 +617,7 @@
     }
 
     .artifact-image-placeholder{
-      display:inline-flex;
+      display:none;
       width:46px;
       height:46px;
       align-items:center;
@@ -527,6 +627,8 @@
       color:var(--muted);
       font-size:9px
     }
+
+    /* Instalación PWA */
 
     .install-banner{
       display:none;
@@ -634,12 +736,17 @@
         display:grid;
         grid-template-columns:110px minmax(0,1fr)
       }
-      .filter-item select,.filter-item input{
+      .filter-item>select,
+      .multi-filter,
+      .multi-filter-button{
         width:100%;
         max-width:none;
         min-width:0
       }
-      .filter-item select[multiple]{min-height:90px}
+      .multi-filter-menu{
+        width:100%;
+        min-width:0
+      }
       .filter-reset{width:100%}
       .install-banner.visible{align-items:stretch}
       .install-actions{width:100%}
@@ -819,8 +926,6 @@
         return sortAlphabetically(rows);
       }
 
-      // Convierte el nombre en el nombre de archivo esperado.
-      // Ejemplo: "Caída en desgracia" -> "caida_en_desgracia.png"
       function imageFileName(name){
         return String(name ?? '')
           .normalize('NFD')
@@ -885,21 +990,34 @@
       function renderCharacterCard(record){
         const name = getField(record,['nombre','name']) ?? 'Sin nombre';
         const element = getField(record,['elemento','element']);
+        const type = getField(record,['tipo','type']);
+        const rank = getField(record,['rango','rank']);
+        const artifact = getField(record,[
+          'artefacto',
+          'artefacto_propio',
+          'arma'
+        ]);
+
         const image = imagePath('personajes',name);
-        const elementClassName = elementClass(record);
+
+        const details = [
+          {label:'Tipo',value:type},
+          {label:'Rango',value:rank},
+          {
+            label:'Artefacto',
+            value:typeof artifact === 'object'
+              ? getField(artifact,['nombre','name']) || safe(artifact)
+              : artifact
+          }
+        ].filter(item =>
+          item.value !== undefined &&
+          item.value !== null &&
+          item.value !== ''
+        );
 
         return (
           '<article class="entity-card character-card ' +
-            rarityClass(record) + ' ' + elementClassName + '">' +
-
-            '<div class="character-image-wrap">' +
-              '<img class="character-image" ' +
-                'src="' + escapeHtml(image) + '" ' +
-                'alt="' + escapeHtml(name) + '" ' +
-                'loading="lazy" ' +
-                'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
-              '<div class="character-image-placeholder" style="display:none">Sin imagen</div>' +
-            '</div>' +
+            rarityClass(record) + ' ' + elementClass(record) + '">' +
 
             '<div class="character-name-row">' +
               '<span class="card-name">' + escapeHtml(name) + '</span>' +
@@ -910,6 +1028,30 @@
                   '</span>'
                 : '') +
             '</div>' +
+
+            '<div class="character-image-wrap">' +
+              '<img class="character-image" ' +
+                'src="' + escapeHtml(image) + '" ' +
+                'alt="' + escapeHtml(name) + '" ' +
+                'loading="lazy" ' +
+                'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
+              '<div class="character-image-placeholder">Sin imagen</div>' +
+            '</div>' +
+
+            (details.length
+              ? '<div class="character-details">' +
+                  details.map(item =>
+                    '<div class="character-detail">' +
+                      '<span class="character-detail-label">' +
+                        escapeHtml(item.label) +
+                      '</span>' +
+                      '<span class="character-detail-value">' +
+                        escapeHtml(safe(item.value)) +
+                      '</span>' +
+                    '</div>'
+                  ).join('') +
+                '</div>'
+              : '') +
 
           '</article>'
         );
@@ -1016,7 +1158,7 @@
                   'alt="' + escapeHtml(name) + '" ' +
                   'loading="lazy" ' +
                   'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'inline-flex\'">' +
-                '<span class="artifact-image-placeholder" style="display:none">Sin imagen</span>' +
+                '<span class="artifact-image-placeholder">Sin imagen</span>' +
               '</td>'
             : '';
 
@@ -1094,6 +1236,44 @@
         );
       }
 
+      function renderMultiFilter(definition,options,current){
+        const selected = Array.isArray(current) ? current : [];
+        const count = selected.length;
+
+        const buttonText = count === 0
+          ? 'Todos'
+          : count === 1
+            ? selected[0]
+            : count + ' seleccionados';
+
+        return (
+          '<div class="filter-item">' +
+            '<label>' + escapeHtml(definition.label) + '</label>' +
+            '<div class="multi-filter" data-multi-filter="' +
+              escapeHtml(definition.field) + '">' +
+
+              '<button type="button" class="multi-filter-button" ' +
+                'aria-expanded="false">' +
+                '<span>' + escapeHtml(buttonText) + '</span>' +
+                '<span class="arrow">▼</span>' +
+              '</button>' +
+
+              '<div class="multi-filter-menu">' +
+                options.map(option =>
+                  '<label class="multi-filter-option">' +
+                    '<input type="checkbox" ' +
+                      'data-multi-option="' + escapeHtml(option) + '"' +
+                      (selected.includes(option) ? ' checked' : '') +
+                    '>' +
+                    '<span>' + escapeHtml(option) + '</span>' +
+                  '</label>'
+                ).join('') +
+              '</div>' +
+            '</div>' +
+          '</div>'
+        );
+      }
+
       function renderFilters(){
         const rows = recordsFor(
           categories.find(category => category.key === active)?.dataKey || active
@@ -1115,33 +1295,13 @@
 
         controls.innerHTML = definitions.map(definition => {
           const options = getFilterOptions(rows,definition);
-          const current = filterState[active][definition.field] || [];
+          const current = filterState[active][definition.field] || '';
 
           if(!options.length) return '';
 
           if(definition.multiple){
-            const selectedValues = Array.isArray(current) ? current : [];
-
-            return (
-              '<div class="filter-item">' +
-                '<label for="filter-' + escapeHtml(definition.field) + '">' +
-                  escapeHtml(definition.label) +
-                '</label>' +
-                '<select multiple size="3" ' +
-                  'id="filter-' + escapeHtml(definition.field) + '" ' +
-                  'data-filter-field="' + escapeHtml(definition.field) + '" ' +
-                  'aria-label="Seleccionar uno o varios valores de ' + escapeHtml(definition.label) + '">' +
-                  options.map(option =>
-                    '<option value="' + escapeHtml(option) + '"' +
-                    (selectedValues.includes(option) ? ' selected' : '') +
-                    '>' + escapeHtml(option) + '</option>'
-                  ).join('') +
-                '</select>' +
-              '</div>'
-            );
+            return renderMultiFilter(definition,options,current);
           }
-
-          const selectedValue = Array.isArray(current) ? current[0] || '' : current;
 
           return (
             '<div class="filter-item">' +
@@ -1153,7 +1313,7 @@
                 '<option value="">Todos</option>' +
                 options.map(option =>
                   '<option value="' + escapeHtml(option) + '"' +
-                  (selectedValue === option ? ' selected' : '') +
+                  (current === option ? ' selected' : '') +
                   '>' + escapeHtml(option) + '</option>'
                 ).join('') +
               '</select>' +
@@ -1163,21 +1323,55 @@
 
         controls.querySelectorAll('select').forEach(select => {
           select.addEventListener('change',() => {
-            const definition = definitions.find(item =>
-              item.field === select.dataset.filterField
-            );
-
-            if(definition?.multiple){
-              filterState[active][select.dataset.filterField] =
-                [...select.selectedOptions].map(option => option.value);
-            }else{
-              filterState[active][select.dataset.filterField] = select.value;
-            }
-
+            filterState[active][select.dataset.filterField] = select.value;
             renderContent();
           });
         });
+
+        controls.querySelectorAll('.multi-filter').forEach(container => {
+          const field = container.dataset.multiFilter;
+          const button = container.querySelector('.multi-filter-button');
+          const menu = container.querySelector('.multi-filter-menu');
+
+          button.addEventListener('click',() => {
+            const isOpen = menu.classList.toggle('open');
+            button.setAttribute('aria-expanded',String(isOpen));
+          });
+
+          container.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change',() => {
+              const selected = [...container.querySelectorAll(
+                'input[type="checkbox"]:checked'
+              )].map(input => input.dataset.multiOption);
+
+              filterState[active][field] = selected;
+
+              const label = button.querySelector('span');
+
+              label.textContent = selected.length === 0
+                ? 'Todos'
+                : selected.length === 1
+                  ? selected[0]
+                  : selected.length + ' seleccionados';
+
+              renderContent();
+            });
+          });
+        });
       }
+
+      // Cierra las listas desplegables al hacer clic fuera de ellas.
+      document.addEventListener('click',event => {
+        document.querySelectorAll('.multi-filter').forEach(container => {
+          if(!container.contains(event.target)){
+            const menu = container.querySelector('.multi-filter-menu');
+            const button = container.querySelector('.multi-filter-button');
+
+            menu.classList.remove('open');
+            button.setAttribute('aria-expanded','false');
+          }
+        });
+      });
 
       function applyFilters(rows){
         const definitions = getFilterDefinitions();
