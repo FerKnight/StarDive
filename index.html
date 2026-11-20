@@ -182,15 +182,6 @@
       background:rgba(24,34,53,.75)
     }
 
-    .filter-heading{
-      color:var(--muted);
-      font-size:10px;
-      font-weight:900;
-      letter-spacing:.1em;
-      text-transform:uppercase;
-      margin-right:4px
-    }
-
     .filter-controls{
       display:flex;
       align-items:center;
@@ -380,7 +371,6 @@
 
     .entity-card:hover{
       transform:translateY(-3px);
-      border-color:var(--entity-color);
       box-shadow:0 8px 28px color-mix(in srgb,var(--entity-color) 13%,transparent)
     }
 
@@ -414,22 +404,18 @@
     /* Tarjetas de personajes */
 
     .character-card{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      text-align:center;
-      padding:16px 15px 18px
+      padding:15px
     }
 
     .character-name-row{
       display:flex;
-      justify-content:center;
+      justify-content:flex-start;
       align-items:center;
       flex-wrap:wrap;
       gap:8px;
       width:100%;
       min-height:30px;
-      margin-bottom:10px;
+      margin-bottom:12px;
       position:relative;
       z-index:1
     }
@@ -463,15 +449,22 @@
       box-shadow:0 0 7px var(--element-color,var(--muted))
     }
 
-    .character-image-wrap{
-      width:100%;
-      height:175px;
-      display:flex;
+    .character-content{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
       align-items:center;
-      justify-content:center;
-      margin-bottom:12px;
+      gap:14px;
       position:relative;
       z-index:1
+    }
+
+    .character-image-wrap{
+      width:100%;
+      height:155px;
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      margin:0
     }
 
     .character-image{
@@ -481,6 +474,7 @@
       width:auto;
       height:auto;
       object-fit:contain;
+      object-position:left center;
       filter:drop-shadow(0 8px 12px rgba(0,0,0,.35))
     }
 
@@ -488,8 +482,8 @@
       display:none;
       align-items:center;
       justify-content:center;
-      width:112px;
-      height:112px;
+      width:100px;
+      height:100px;
       border:1px dashed var(--line);
       border-radius:50%;
       color:var(--muted);
@@ -497,29 +491,20 @@
     }
 
     .character-details{
-      display:grid;
-      gap:8px;
-      width:100%;
-      padding-top:12px;
-      border-top:1px solid rgba(148,163,184,.15);
-      text-align:left;
-      position:relative;
-      z-index:1
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      justify-content:center;
+      gap:12px;
+      min-width:0;
+      text-align:right
     }
 
     .character-detail{
-      display:grid;
-      grid-template-columns:85px minmax(0,1fr);
-      gap:8px;
-      font-size:12px
-    }
-
-    .character-detail-label{
-      color:var(--muted)
-    }
-
-    .character-detail-value{
+      width:100%;
       color:#E2E8F0;
+      font-size:13px;
+      font-weight:750;
       text-align:right;
       overflow-wrap:anywhere
     }
@@ -748,6 +733,13 @@
         min-width:0
       }
       .filter-reset{width:100%}
+      .character-content{
+        grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+        gap:10px
+      }
+      .character-image-wrap{height:140px}
+      .character-details{gap:10px}
+      .character-detail{font-size:12px}
       .install-banner.visible{align-items:stretch}
       .install-actions{width:100%}
       .install-button,.install-dismiss{flex:1}
@@ -802,7 +794,6 @@
     </div>
 
     <section class="filter-bar" id="filterBar" aria-label="Filtros">
-      <span class="filter-heading">Filtros</span>
       <div class="filter-controls" id="filterControls"></div>
       <button class="filter-reset" id="resetFilters" type="button">Limpiar filtros</button>
     </section>
@@ -992,27 +983,13 @@
         const element = getField(record,['elemento','element']);
         const type = getField(record,['tipo','type']);
         const rank = getField(record,['rango','rank']);
-        const artifact = getField(record,[
-          'artefacto',
-          'artefacto_propio',
-          'arma'
-        ]);
 
         const image = imagePath('personajes',name);
 
-        const details = [
-          {label:'Tipo',value:type},
-          {label:'Rango',value:rank},
-          {
-            label:'Artefacto',
-            value:typeof artifact === 'object'
-              ? getField(artifact,['nombre','name']) || safe(artifact)
-              : artifact
-          }
-        ].filter(item =>
-          item.value !== undefined &&
-          item.value !== null &&
-          item.value !== ''
+        const details = [type,rank].filter(value =>
+          value !== undefined &&
+          value !== null &&
+          value !== ''
         );
 
         return (
@@ -1029,30 +1006,28 @@
                 : '') +
             '</div>' +
 
-            '<div class="character-image-wrap">' +
-              '<img class="character-image" ' +
-                'src="' + escapeHtml(image) + '" ' +
-                'alt="' + escapeHtml(name) + '" ' +
-                'loading="lazy" ' +
-                'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
-              '<div class="character-image-placeholder">Sin imagen</div>' +
+            '<div class="character-content">' +
+
+              '<div class="character-image-wrap">' +
+                '<img class="character-image" ' +
+                  'src="' + escapeHtml(image) + '" ' +
+                  'alt="' + escapeHtml(name) + '" ' +
+                  'loading="lazy" ' +
+                  'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
+                '<div class="character-image-placeholder">Sin imagen</div>' +
+              '</div>' +
+
+              (details.length
+                ? '<div class="character-details">' +
+                    details.map(value =>
+                      '<div class="character-detail">' +
+                        escapeHtml(safe(value)) +
+                      '</div>'
+                    ).join('') +
+                  '</div>'
+                : '<div class="character-details"></div>') +
+
             '</div>' +
-
-            (details.length
-              ? '<div class="character-details">' +
-                  details.map(item =>
-                    '<div class="character-detail">' +
-                      '<span class="character-detail-label">' +
-                        escapeHtml(item.label) +
-                      '</span>' +
-                      '<span class="character-detail-value">' +
-                        escapeHtml(safe(item.value)) +
-                      '</span>' +
-                    '</div>'
-                  ).join('') +
-                '</div>'
-              : '') +
-
           '</article>'
         );
       }
