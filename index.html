@@ -58,7 +58,7 @@
 
     .top {
       position: relative;
-      padding: 48px 0 34px;
+      padding: 30px 0 24px;
       border-bottom: 1px solid var(--line);
       overflow: hidden;
     }
@@ -89,17 +89,10 @@
     h1 {
       font-size: clamp(36px, 6vw, 62px);
       line-height: 1;
-      margin: 15px 0;
+      margin: 9px 0 0;
       letter-spacing: -.055em;
       font-weight: 900;
       text-shadow: 0 0 30px rgba(56, 189, 248, .16);
-    }
-
-    .sub {
-      color: var(--muted);
-      max-width: 680px;
-      margin: 0;
-      font-size: 14px;
     }
 
     .status {
@@ -132,14 +125,14 @@
     .stats {
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 13px;
-      padding: 26px 0;
+      gap: 11px;
+      padding: 18px 0;
     }
 
     .stat {
       position: relative;
       overflow: hidden;
-      padding: 17px;
+      padding: 14px;
       background: linear-gradient(145deg, var(--panel), var(--bg2));
       border: 1px solid var(--line);
       border-radius: 10px;
@@ -306,8 +299,8 @@
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
-      gap: 15px;
-      padding: 20px;
+      gap: 13px;
+      padding: 16px;
     }
 
     .entity-card {
@@ -318,8 +311,8 @@
       background: linear-gradient(155deg, #202C40, #151D2C 75%);
       border: 1px solid var(--line);
       border-top: 3px solid var(--entity-color);
-      border-radius: 9px;
-      padding: 17px;
+      border-radius: 11px;
+      padding: 15px;
       transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
     }
 
@@ -523,21 +516,6 @@
       border-bottom: 0;
     }
 
-    /* PIE */
-
-    footer {
-      padding: 22px 0 36px;
-      color: #718096;
-      font-size: 11px;
-      border-top: 1px solid var(--line);
-      text-align: center;
-      letter-spacing: .04em;
-    }
-
-    footer code {
-      color: var(--cyan);
-    }
-
     /* INSTALACIÓN PWA */
 
     .install-banner {
@@ -651,7 +629,7 @@
       }
 
       .top {
-        padding-top: 34px;
+        padding: 26px 0 20px;
       }
 
       .stats {
@@ -701,14 +679,9 @@
 
   <header class="top">
     <div class="wrap">
-      <div class="eyebrow">STAR DIVE · DATABASE</div>
+      <div class="eyebrow">DATABASE</div>
 
       <h1>Star Dive</h1>
-
-      <p class="sub">
-        Explora personajes, artefactos, monsterlings,
-        equipamientos y regiones.
-      </p>
 
       <div class="status" id="status">
         <span class="dot"></span>
@@ -770,13 +743,6 @@
     </section>
 
   </main>
-
-  <footer>
-    <div class="wrap">
-      Star Dive · Los datos se cargan desde
-      <code>data/mongil_database.json</code>.
-    </div>
-  </footer>
 
   <script>
     (() => {
@@ -1035,25 +1001,21 @@
               '<div>' + mainTag + '</div>' +
             '</div>' +
 
-            '<div class="card-divider"></div>' +
+            (details
+              ? '<div class="card-divider"></div>' +
+                '<div class="card-details">' + details + '</div>'
+              : '') +
 
-            '<div class="card-details">' +
-              (details ||
-                '<div class="detail">' +
-                  '<span class="detail-label">Información</span>' +
-                  '<span class="detail-value">Sin detalles adicionales</span>' +
+            (elementTag || (grade !== undefined && isMonster)
+              ? '<div class="card-footer">' +
+                  elementTag +
+                  (grade !== undefined && isMonster
+                    ? '<span class="tag gold">' +
+                        escapeHtml(safe(grade)) +
+                      '</span>'
+                    : '') +
                 '</div>'
-              ) +
-            '</div>' +
-
-            '<div class="card-footer">' +
-              elementTag +
-              (grade !== undefined && isMonster
-                ? '<span class="tag gold">' +
-                    escapeHtml(safe(grade)) +
-                  '</span>'
-                : '') +
-            '</div>' +
+              : '') +
 
           '</article>'
         );
@@ -1167,17 +1129,17 @@
             database.estado === 'provisional' ||
             database.provisional === true;
 
-          $('status').innerHTML =
-            '<span class="dot ' +
-              (provisional ? '' : 'live') +
-            '"></span>' +
-            '<span>' +
-              (provisional
-                ? 'Estructura inicial · esperando los datos reales de Google Sheets'
-                : 'Datos cargados correctamente') +
-            '</span>';
+          if (provisional) {
+            $('status').style.display = 'inline-flex';
+            $('status').innerHTML =
+              '<span class="dot"></span>' +
+              '<span>Estructura inicial · esperando los datos reales de Google Sheets</span>';
+          } else {
+            $('status').style.display = 'none';
+          }
         })
         .catch(error => {
+          $('status').style.display = 'inline-flex';
           $('status').innerHTML =
             '<span class="dot"></span>' +
             '<span class="error">No se pudo cargar el JSON: ' +
