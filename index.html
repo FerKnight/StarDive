@@ -4,9 +4,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0F172A">
+  <meta name="theme-color" content="#131620">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Star Dive">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
   <meta name="description" content="Mongil Database: guía de personajes, artefactos, monsterlings y equipamiento de Mongil: Star Dive.">
-  <title>Mongil Database</title>
+  <title>Star Dive</title>
 
   <style>
     :root {
@@ -533,6 +538,105 @@
       color: var(--cyan);
     }
 
+    /* INSTALACIÓN PWA */
+
+    .install-banner {
+      display: none;
+      position: relative;
+      margin: 18px auto 0;
+      padding: 16px 18px;
+      border: 1px solid rgba(56, 189, 248, .45);
+      border-radius: 10px;
+      background: linear-gradient(110deg, rgba(30, 41, 59, .98), rgba(49, 36, 83, .96));
+      box-shadow: 0 10px 35px rgba(0, 0, 0, .2);
+    }
+
+    .install-banner.visible {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .install-copy {
+      flex: 1 1 240px;
+    }
+
+    .install-title {
+      margin: 0 0 4px;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .install-description {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .install-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .install-button, .install-dismiss {
+      border-radius: 6px;
+      padding: 9px 13px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .install-button {
+      border: 1px solid var(--cyan);
+      background: var(--cyan);
+      color: #082032;
+    }
+
+    .install-dismiss {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+    }
+
+    .ios-instructions {
+      display: none;
+      flex-basis: 100%;
+      margin-top: 8px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+      color: var(--text);
+      font-size: 12px;
+    }
+
+    .ios-instructions.visible {
+      display: block;
+    }
+
+    .ios-instructions ol {
+      margin: 7px 0 0;
+      padding-left: 20px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 600px) {
+      .install-banner.visible {
+        align-items: stretch;
+      }
+
+      .install-actions {
+        width: 100%;
+      }
+
+      .install-button, .install-dismiss {
+        flex: 1;
+      }
+    }
+
     /* RESPONSIVE */
 
     @media (max-width: 850px) {
@@ -597,9 +701,9 @@
 
   <header class="top">
     <div class="wrap">
-      <div class="eyebrow">Mongil · Star Dive</div>
+      <div class="eyebrow">STAR DIVE · DATABASE</div>
 
-      <h1>Mongil Database</h1>
+      <h1>Star Dive</h1>
 
       <p class="sub">
         Explora personajes, artefactos, monsterlings,
@@ -612,6 +716,30 @@
       </div>
     </div>
   </header>
+
+  <aside class="wrap">
+    <section class="install-banner" id="installBanner" aria-label="Instalar Star Dive">
+      <div class="install-copy">
+        <h2 class="install-title">Instala Star Dive</h2>
+        <p class="install-description">Ten tu guía siempre a mano, directamente desde tu dispositivo.</p>
+      </div>
+
+      <div class="install-actions">
+        <button class="install-button" id="installButton" type="button">Instalar aplicación</button>
+        <button class="install-dismiss" id="dismissInstall" type="button">Ahora no</button>
+      </div>
+
+      <div class="ios-instructions" id="iosInstructions">
+        <strong>Cómo instalar en iPhone o iPad:</strong>
+        <ol>
+          <li>Abre esta página en Safari.</li>
+          <li>Toca el botón Compartir.</li>
+          <li>Selecciona «Añadir a pantalla de inicio».</li>
+          <li>Confirma tocando «Añadir».</li>
+        </ol>
+      </div>
+    </section>
+  </aside>
 
   <main class="wrap">
 
@@ -645,7 +773,7 @@
 
   <footer>
     <div class="wrap">
-      Mongil Database · Los datos se cargan desde
+      Star Dive · Los datos se cargan desde
       <code>data/mongil_database.json</code>.
     </div>
   </footer>
@@ -1064,6 +1192,102 @@
             '</div>';
         });
 
+    })();
+  </script>
+
+  <script>
+    (() => {
+      const banner = document.getElementById('installBanner');
+      const installButton = document.getElementById('installButton');
+      const dismissButton = document.getElementById('dismissInstall');
+      const iosInstructions = document.getElementById('iosInstructions');
+
+      if (!banner || !installButton || !dismissButton) return;
+
+      const DISMISS_KEY = 'star-dive-install-dismissed';
+      const DISMISS_DAYS = 7;
+      let deferredPrompt = null;
+
+      const isStandalone =
+        window.matchMedia('(display-mode: standalone)').matches ||
+        window.navigator.standalone === true;
+
+      const isIOS =
+        /iphone|ipad|ipod/i.test(window.navigator.userAgent) ||
+        (window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1);
+
+      function wasDismissedRecently() {
+        try {
+          const dismissedAt = Number(localStorage.getItem(DISMISS_KEY) || 0);
+          const sevenDays = DISMISS_DAYS * 24 * 60 * 60 * 1000;
+          return dismissedAt > 0 && Date.now() - dismissedAt < sevenDays;
+        } catch (error) {
+          return false;
+        }
+      }
+
+      function showBanner() {
+        if (isStandalone || wasDismissedRecently()) return;
+        banner.classList.add('visible');
+      }
+
+      function hideBanner() {
+        banner.classList.remove('visible');
+      }
+
+      dismissButton.addEventListener('click', () => {
+        try {
+          localStorage.setItem(DISMISS_KEY, String(Date.now()));
+        } catch (error) {
+          // La página seguirá funcionando aunque el almacenamiento esté bloqueado.
+        }
+        hideBanner();
+      });
+
+      if (isIOS && !isStandalone) {
+        installButton.textContent = 'Cómo instalar';
+        iosInstructions.classList.remove('visible');
+        installButton.addEventListener('click', () => {
+          iosInstructions.classList.toggle('visible');
+        });
+        showBanner();
+      }
+
+      window.addEventListener('beforeinstallprompt', (event) => {
+        event.preventDefault();
+        deferredPrompt = event;
+
+        if (!isIOS) {
+          installButton.textContent = 'Instalar aplicación';
+          showBanner();
+        }
+      });
+
+      installButton.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        hideBanner();
+      });
+
+      window.addEventListener('appinstalled', () => {
+        deferredPrompt = null;
+        hideBanner();
+      });
+
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js')
+            .then(registration => {
+              console.log('Star Dive: Service Worker registrado.', registration.scope);
+            })
+            .catch(error => {
+              console.error('Star Dive: error al registrar el Service Worker.', error);
+            });
+        });
+      }
     })();
   </script>
 
