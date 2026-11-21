@@ -401,19 +401,18 @@
       background:linear-gradient(155deg,#39321F,#1C1D2A 75%)
     }
 
-    /* Tarjetas de personajes: márgenes equilibrados. */
+    /* Tarjetas compactas de personajes */
 
     .character-card{
-      padding:10px 5px;
+      padding:10px
     }
 
     .character-content{
       display:grid;
-      grid-template-columns:minmax(0,32%) minmax(0,1fr);
+      grid-template-columns:minmax(0,42%) minmax(0,1fr);
       align-items:center;
-      gap:8px;
+      gap:12px;
       min-height:125px;
-      width:100%;
       position:relative;
       z-index:1
     }
@@ -456,12 +455,10 @@
       justify-content:center;
       gap:5px;
       min-width:0;
-      width:100%;
       text-align:left
     }
 
     .card-name{
-      width:100%;
       font-size:16px;
       line-height:1.2;
       font-weight:900;
@@ -728,12 +725,11 @@
         min-width:0
       }
       .filter-reset{width:100%}
-
-      .character-card{padding:9px 5px}
+      .character-card{padding:9px}
       .character-content{
-        grid-template-columns:minmax(0,32%) minmax(0,1fr);
+        grid-template-columns:minmax(0,40%) minmax(0,1fr);
         min-height:112px;
-        gap:8px
+        gap:10px
       }
       .character-image-wrap{height:112px}
       .character-details{gap:4px}
