@@ -406,7 +406,7 @@
     /* Tarjetas compactas de personajes */
 
     .character-card{
-      padding:4px 2px 4px 4px
+      padding:4px 0 4px 4px
     }
 
     .character-content{
@@ -457,6 +457,7 @@
       justify-content:center;
       gap:3px;
       min-width:0;
+      padding-right:0;
       text-align:left
     }
 
@@ -736,7 +737,7 @@
 
       /* Tarjetas más bajas en móviles */
 
-      .character-card{padding:4px 2px 4px 4px}
+      .character-card{padding:4px 0 4px 4px}
 
       .character-content{
         grid-template-columns:minmax(0,34%) minmax(0,1fr);
@@ -745,7 +746,10 @@
       }
 
       .character-image-wrap{height:70px}
-      .character-details{gap:3px}
+      .character-details{
+        gap:3px;
+        padding-right:0
+      }
       .card-name{font-size:13px}
       .character-detail{font-size:10px}
 
