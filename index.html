@@ -21,11 +21,24 @@
 <body>
   <header class="top">
     <div class="wrap">
-      <h1>Star Dive <span class="brand-star" aria-hidden="true">✦</span></h1>
+      <div class="header-content">
+        <div class="header-brand">
+          <h1>Star Dive <span class="brand-star" aria-hidden="true">✦</span></h1>
 
-      <div class="status" id="status">
-        <span class="dot"></span>
-        <span>Conectando con la base de datos…</span>
+          <div class="status" id="status">
+            <span class="dot"></span>
+            <span>Conectando con la base de datos…</span>
+          </div>
+        </div>
+
+        <div class="header-search">
+          <input
+            id="search"
+            type="search"
+            placeholder="Buscar"
+            aria-label="Buscar en toda la base de datos"
+          >
+        </div>
       </div>
     </div>
   </header>
@@ -63,13 +76,6 @@
   <main class="wrap">
     <div class="toolbar">
       <nav class="tabs" id="tabs" aria-label="Categorías"></nav>
-
-      <input
-        id="search"
-        type="search"
-        placeholder="Buscar en toda la base de datos…"
-        aria-label="Buscar en toda la base de datos"
-      >
     </div>
 
     <section class="filter-bar" id="filterBar" aria-label="Filtros">
