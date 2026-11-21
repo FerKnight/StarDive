@@ -1,0 +1,136 @@
+.artifact-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:8px;
+  padding:9px
+}
+
+.artifact-card{
+  --entity-color:var(--cyan);
+  position:relative;
+  min-width:0;
+  overflow:hidden;
+  border:1px solid var(--entity-color);
+  border-top:3px solid var(--entity-color);
+  border-radius:9px;
+  background:linear-gradient(145deg,#202C40,#151D2C 80%);
+  transition:transform .2s,box-shadow .2s;
+  color:var(--text)
+}
+
+.artifact-card.rarity-5{
+  --entity-color:var(--gold);
+  border-color:var(--gold);
+  background:linear-gradient(145deg,#39321F,#1C1D2A 80%)
+}
+
+.artifact-card.rarity-4{
+  --entity-color:var(--violet);
+  border-color:var(--violet)
+}
+
+.artifact-card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 25px color-mix(in srgb,var(--entity-color) 16%,transparent)
+}
+
+.artifact-card-button{
+  display:grid;
+  grid-template-columns:82px minmax(0,1fr);
+  align-items:center;
+  gap:8px;
+  width:100%;
+  min-height:96px;
+  padding:7px;
+  border:0;
+  background:transparent;
+  color:inherit;
+  text-align:left;
+  cursor:pointer
+}
+
+.artifact-image-wrap{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  height:82px;
+  overflow:hidden
+}
+
+.artifact-image{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  filter:drop-shadow(0 5px 9px rgba(0,0,0,.4))
+}
+
+.artifact-image-placeholder{
+  display:none;
+  align-items:center;
+  justify-content:center;
+  width:65px;
+  height:65px;
+  border:1px dashed var(--line);
+  border-radius:8px;
+  color:var(--muted);
+  font-size:9px
+}
+
+.artifact-info{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  gap:4px;
+  min-width:0
+}
+
+.artifact-name{
+  font-size:13px;
+  line-height:1.2;
+  font-weight:900;
+  overflow-wrap:anywhere
+}
+
+.artifact-meta{
+  color:#CBD5E1;
+  font-size:11px;
+  line-height:1.25;
+  font-weight:650;
+  overflow-wrap:anywhere
+}
+
+.artifact-expand-icon{
+  margin-top:1px;
+  color:var(--entity-color);
+  font-size:9px;
+  font-weight:900
+}
+
+.artifact-effect{
+  display:none;
+  position:relative;
+  z-index:1;
+  padding:12px 14px 14px;
+  border-top:1px solid color-mix(in srgb,var(--entity-color) 45%,transparent);
+  background:rgba(8,13,24,.35);
+  color:#E2E8F0;
+  font-size:12px;
+  line-height:1.5;
+  white-space:pre-line;
+  overflow-wrap:anywhere
+}
+
+.artifact-card.expanded .artifact-effect{display:block}
+
+.artifact-effect-title{
+  display:block;
+  margin-bottom:5px;
+  color:var(--entity-color);
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.06em;
+  text-transform:uppercase
+}
