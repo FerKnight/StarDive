@@ -422,7 +422,7 @@
       height:125px;
       display:flex;
       align-items:center;
-      justify-content:center;
+      justify-content:flex-start;
       margin:0;
       overflow:hidden
     }
@@ -432,7 +432,7 @@
       width:100%;
       height:100%;
       object-fit:contain;
-      object-position:center;
+      object-position:left center;
       filter:drop-shadow(0 6px 9px rgba(0,0,0,.35))
     }
 
@@ -732,9 +732,9 @@
         gap:10px
       }
       .character-image-wrap{height:112px}
-      .character-details{gap:5px}
+      .character-details{gap:4px}
       .card-name{font-size:15px}
-      .character-detail{font-size:12px}
+      .character-detail{font-size:11px}
       .install-banner.visible{align-items:stretch}
       .install-actions{width:100%}
       .install-button,.install-dismiss{flex:1}
@@ -981,12 +981,6 @@
 
         const image = imagePath('personajes',name);
 
-        const details = [type,rank].filter(value =>
-          value !== undefined &&
-          value !== null &&
-          value !== ''
-        );
-
         return (
           '<article class="entity-card character-card ' +
             rarityClass(record) + ' ' + elementClass(record) + '">' +
@@ -1003,9 +997,6 @@
               '</div>' +
 
               '<div class="character-details">' +
-                '<div class="card-name">' +
-                  escapeHtml(name) +
-                '</div>' +
 
                 (element !== undefined && element !== null && element !== ''
                   ? '<span class="element-label">' +
@@ -1014,11 +1005,21 @@
                     '</span>'
                   : '') +
 
-                details.map(value =>
-                  '<div class="character-detail">' +
-                    escapeHtml(safe(value)) +
-                  '</div>'
-                ).join('') +
+                '<div class="card-name">' +
+                  escapeHtml(name) +
+                '</div>' +
+
+                (type !== undefined && type !== null && type !== ''
+                  ? '<div class="character-detail">' +
+                      escapeHtml(safe(type)) +
+                    '</div>'
+                  : '') +
+
+                (rank !== undefined && rank !== null && rank !== ''
+                  ? '<div class="character-detail">' +
+                      escapeHtml(safe(rank)) +
+                    '</div>'
+                  : '') +
 
               '</div>' +
             '</div>' +
