@@ -1,0 +1,15 @@
+input,select{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:6px;
+  padding:11px 14px;
+  color:var(--text);
+  outline:none
+}
+
+input:focus,select:focus{
+  border-color:var(--cyan);
+  box-shadow:0 0 0 3px rgba(56,189,248,.12)
+}
+
+input::placeholder{color:#718096}
