@@ -26,7 +26,8 @@ import {
 
 import {
   renderArtifactCards,
-  prioritizePremiumArtifacts
+  splitArtifactGroups,
+  isPremiumArtifact
 } from './artifacts.js';
 
 import {
@@ -138,6 +139,33 @@ function renderCards(rows, category) {
 }
 
 // --------------------------------------------------
+// RENDERIZADO DE ARTEFACTOS
+// --------------------------------------------------
+
+function renderArtifactSections(rows) {
+  const groups = splitArtifactGroups(rows);
+  let html = '';
+
+  if (groups.premium.length) {
+    html +=
+      '<section class="artifact-section">' +
+        '<h2 class="group-title">Artefactos del pase</h2>' +
+        renderArtifactCards(groups.premium) +
+      '</section>';
+  }
+
+  if (groups.general.length) {
+    html +=
+      '<section class="artifact-section">' +
+        '<h2 class="group-title">Artefactos en general</h2>' +
+        renderArtifactCards(groups.general) +
+      '</section>';
+  }
+
+  return html || '<div class="empty">No se encontraron artefactos.</div>';
+}
+
+// --------------------------------------------------
 // BÚSQUEDA GLOBAL
 // --------------------------------------------------
 
@@ -170,8 +198,13 @@ function globalResults(query) {
     group => group.key === 'artefactos'
   );
 
-  const matchedCharacters = characterGroup.rows;
-  const artifactRows = artifactGroup.rows;
+  const matchedCharacters = characterGroup
+    ? characterGroup.rows
+    : [];
+
+  const artifactRows = artifactGroup
+    ? artifactGroup.rows
+    : [];
 
   // Si aparece un personaje, también se busca su artefacto vinculado.
   for (const character of matchedCharacters) {
@@ -208,7 +241,17 @@ function globalResults(query) {
         (linkedName && artifactName === linkedName) ||
         (characterName && owner === characterName);
 
-      if (related && !artifactRows.includes(artifact)) {
+      // Los premium solo aparecen si coinciden directamente
+      // con el texto escrito en el buscador.
+      const premiumMatchesSearch =
+        !isPremiumArtifact(artifact) ||
+        matchesQuery(artifact, query);
+
+      if (
+        related &&
+        premiumMatchesSearch &&
+        !artifactRows.includes(artifact)
+      ) {
         artifactRows.push(artifact);
       }
     }
@@ -240,13 +283,9 @@ function globalResults(query) {
     }
   }
 
-  // Orden de resultados: los artefactos premium siempre primero.
   for (const group of groups) {
     if (group.key === 'artefactos') {
-      group.rows = prioritizePremiumArtifacts(
-        group.rows,
-        recordsFor('artefactos')
-      );
+      group.rows = sortAlphabetically(group.rows);
     } else if (group.key !== 'monsterlings') {
       group.rows = sortAlphabetically(group.rows);
     }
@@ -261,14 +300,7 @@ function globalResults(query) {
 
 function renderGroup(group) {
   if (group.key === 'artefactos') {
-    return (
-      '<section class="result-group">' +
-        '<h2 class="group-title">' +
-          escapeHtml(group.label) +
-        '</h2>' +
-        renderArtifactCards(group.rows) +
-      '</section>'
-    );
+    return renderArtifactSections(group.rows);
   }
 
   const cards =
@@ -323,12 +355,7 @@ function renderContent() {
   rows = filterManager.apply(rows);
 
   if (active === 'artefactos') {
-    rows = prioritizePremiumArtifacts(
-      rows,
-      recordsFor(dataKey)
-    );
-
-    content.innerHTML = renderArtifactCards(rows);
+    content.innerHTML = renderArtifactSections(rows);
     return;
   }
 
