@@ -40,7 +40,39 @@ import {
   initPWA
 } from './pwa.js';
 
-let active = 'personajes';
+// --------------------------------------------------
+// CATEGORÍA ACTIVA DE LA SESIÓN
+// --------------------------------------------------
+
+const ACTIVE_CATEGORY_KEY = 'star-dive-active-category';
+
+function getInitialActiveCategory() {
+  try {
+    const savedCategory = sessionStorage.getItem(
+      ACTIVE_CATEGORY_KEY
+    );
+
+    const exists = categories.some(
+      category => category.key === savedCategory
+    );
+
+    return exists ? savedCategory : 'personajes';
+
+  } catch (error) {
+    return 'personajes';
+  }
+}
+
+function saveActiveCategory() {
+  try {
+    sessionStorage.setItem(
+      ACTIVE_CATEGORY_KEY,
+      active
+    );
+  } catch (error) {}
+}
+
+let active = getInitialActiveCategory();
 
 const filterState = {};
 
@@ -68,6 +100,8 @@ function renderTabs() {
   tabs.querySelectorAll('button').forEach(button => {
     button.addEventListener('click', () => {
       active = button.dataset.key;
+
+      saveActiveCategory();
 
       renderTabs();
       filterManager.render();
