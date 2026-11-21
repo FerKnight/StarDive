@@ -1,5 +1,5 @@
 
-const CACHE_VERSION = "star-dive-v2";
+const CACHE_VERSION = "star-dive-v3";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const DATA_CACHE = `${CACHE_VERSION}-data`;
 
@@ -27,8 +27,6 @@ const STATIC_FILES = [
   "./icons/icon-512.png",
   "./icons/apple-touch-icon.png"
 ];
-
-const DATABASE_URL = "./data/mongil_database.json";
 
 // Instalar y guardar los recursos esenciales.
 self.addEventListener("install", (event) => {
