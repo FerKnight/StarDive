@@ -1,3 +1,4 @@
+
 import {
   safe,
   escapeHtml,
@@ -5,6 +6,58 @@ import {
   getField,
   imagePath
 } from './database.js';
+
+// --------------------------------------------------
+// ARTEFACTOS PREMIUM
+// --------------------------------------------------
+
+const PREMIUM_ARTIFACTS = [
+  'halo celestial de vida',
+  'lucha frenetica',
+  'oscuridad opresiva',
+  'temblores tronidos'
+];
+
+function getArtifactName(record) {
+  return normalize(
+    getField(record, ['nombre', 'name']) ?? ''
+  );
+}
+
+function isPremiumArtifact(record) {
+  return PREMIUM_ARTIFACTS.includes(
+    getArtifactName(record)
+  );
+}
+
+export function prioritizePremiumArtifacts(rows, allRows = rows) {
+  const premium = PREMIUM_ARTIFACTS
+    .map(name =>
+      allRows.find(record =>
+        getArtifactName(record) === name
+      )
+    )
+    .filter(Boolean);
+
+  const remaining = rows
+    .filter(record => !isPremiumArtifact(record))
+    .sort((a, b) => {
+      const nameA = getField(a, ['nombre', 'name']) ?? '';
+      const nameB = getField(b, ['nombre', 'name']) ?? '';
+
+      return String(nameA).localeCompare(
+        String(nameB),
+        'es',
+        { sensitivity: 'base', numeric: true }
+      );
+    });
+
+  return [...premium, ...remaining];
+}
+
+// --------------------------------------------------
+// EFECTOS DE ARTEFACTOS
+// --------------------------------------------------
 
 function getArtifactEffect(record) {
   return String(getField(record, [
@@ -88,6 +141,10 @@ export function getArtifactEffectTags(record, field) {
   return tags;
 }
 
+// --------------------------------------------------
+// RAREZA
+// --------------------------------------------------
+
 function rarityClass(record) {
   const grade = String(
     getField(record, ['grado', 'rareza', 'rarity']) ?? ''
@@ -99,6 +156,10 @@ function rarityClass(record) {
       ? 'rarity-4'
       : '';
 }
+
+// --------------------------------------------------
+// TARJETAS
+// --------------------------------------------------
 
 export function renderArtifactCard(record, index) {
   const name = getField(record, ['nombre', 'name']) ?? 'Sin nombre';
