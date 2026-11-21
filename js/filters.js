@@ -5,9 +5,9 @@ import {
 } from './config.js';
 
 import {
-  database,
   recordsFor,
   safe,
+  escapeHtml,
   normalize,
   getField
 } from './database.js';
@@ -120,21 +120,21 @@ export function createFilterManager({
 
     return (
       '<div class="filter-item">' +
-        '<label>' + safe(definition.label) + '</label>' +
+        '<label>' + escapeHtml(definition.label) + '</label>' +
         '<div class="multi-filter" data-multi-filter="' +
-          definition.field + '">' +
+          escapeHtml(definition.field) + '">' +
           '<button type="button" class="multi-filter-button" aria-expanded="false">' +
-            '<span>' + safe(buttonText) + '</span>' +
+            '<span>' + escapeHtml(buttonText) + '</span>' +
             '<span class="arrow">▼</span>' +
           '</button>' +
           '<div class="multi-filter-menu">' +
             options.map(option =>
               '<label class="multi-filter-option">' +
                 '<input type="checkbox" data-multi-option="' +
-                  safe(option) + '"' +
+                  escapeHtml(option) + '"' +
                   (selected.includes(option) ? ' checked' : '') +
                 '>' +
-                '<span>' + safe(option) + '</span>' +
+                '<span>' + escapeHtml(option) + '</span>' +
               '</label>'
             ).join('') +
           '</div>' +
@@ -188,16 +188,16 @@ export function createFilterManager({
 
       return (
         '<div class="filter-item">' +
-          '<label for="filter-' + safe(definition.field) + '">' +
-            safe(definition.label) +
+          '<label for="filter-' + escapeHtml(definition.field) + '">' +
+            escapeHtml(definition.label) +
           '</label>' +
-          '<select id="filter-' + safe(definition.field) +
-            '" data-filter-field="' + safe(definition.field) + '">' +
+          '<select id="filter-' + escapeHtml(definition.field) +
+            '" data-filter-field="' + escapeHtml(definition.field) + '">' +
             '<option value="">Todos</option>' +
             options.map(option =>
-              '<option value="' + safe(option) + '"' +
+              '<option value="' + escapeHtml(option) + '"' +
                 (current === option ? ' selected' : '') +
-              '>' + safe(option) + '</option>'
+              '>' + escapeHtml(option) + '</option>'
             ).join('') +
           '</select>' +
         '</div>'
