@@ -1,0 +1,38 @@
+.toolbar{
+  display:flex;
+  gap:14px;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  margin:22px 0 12px
+}
+
+.tabs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap
+}
+
+.tab{
+  border:1px solid var(--line);
+  background:var(--panel);
+  color:var(--muted);
+  padding:10px 14px;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:800;
+  transition:.2s
+}
+
+.tab:hover{
+  border-color:var(--cyan);
+  color:white
+}
+
+.tab[aria-pressed=true]{
+  background:rgba(56,189,248,.13);
+  border-color:var(--cyan);
+  color:var(--cyan);
+  box-shadow:0 0 16px rgba(56,189,248,.12)
+}
