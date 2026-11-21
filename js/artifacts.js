@@ -30,6 +30,10 @@ export function isPremiumArtifact(record) {
   );
 }
 
+// --------------------------------------------------
+// SEPARACIÓN DE ARTEFACTOS
+// --------------------------------------------------
+
 export function splitArtifactGroups(rows) {
   const premium = [];
   const general = [];
@@ -42,11 +46,13 @@ export function splitArtifactGroups(rows) {
     }
   }
 
+  // Orden fijo de los cuatro artefactos premium.
   premium.sort((a, b) => {
     return PREMIUM_ARTIFACTS.indexOf(getArtifactName(a)) -
       PREMIUM_ARTIFACTS.indexOf(getArtifactName(b));
   });
 
+  // Orden alfabético para los demás artefactos.
   general.sort((a, b) => {
     const nameA = getField(a, ['nombre', 'name']) ?? '';
     const nameB = getField(b, ['nombre', 'name']) ?? '';
