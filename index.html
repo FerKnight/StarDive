@@ -335,13 +335,20 @@
       text-transform:uppercase
     }
 
-    /* Tarjetas más pequeñas */
+    /* Tarjetas */
 
     .cards-grid{
       display:grid;
       grid-template-columns:repeat(auto-fill,minmax(205px,1fr));
       gap:8px;
       padding:10px
+    }
+
+    /* Ancho uniforme exclusivo para las tarjetas de personajes. */
+
+    .character-grid{
+      grid-template-columns:repeat(auto-fill,205px);
+      justify-content:start
     }
 
     .entity-card{
@@ -711,6 +718,13 @@
         grid-template-columns:1fr;
         padding:8px;
         gap:7px
+      }
+
+      /* En móviles, personajes de 180 px y Monsterlings sin cambios. */
+
+      .character-grid{
+        grid-template-columns:repeat(auto-fill,180px);
+        justify-content:start
       }
 
       .filter-bar{align-items:flex-start}
@@ -1102,8 +1116,12 @@
           return '<div class="empty">Todavía no hay registros publicados en esta categoría.</div>';
         }
 
+        const gridClass = category === 'personajes'
+          ? 'cards-grid character-grid'
+          : 'cards-grid';
+
         return (
-          '<div class="cards-grid">' +
+          '<div class="' + gridClass + '">' +
           rows.map(record =>
             category === 'personajes'
               ? renderCharacterCard(record)
