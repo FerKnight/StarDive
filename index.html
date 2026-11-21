@@ -335,11 +335,13 @@
       text-transform:uppercase
     }
 
+    /* Tarjetas más pequeñas */
+
     .cards-grid{
       display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(245px,1fr));
-      gap:11px;
-      padding:13px
+      grid-template-columns:repeat(auto-fill,minmax(205px,1fr));
+      gap:8px;
+      padding:10px
     }
 
     .entity-card{
@@ -350,8 +352,8 @@
       background:linear-gradient(155deg,#202C40,#151D2C 75%);
       border:1px solid var(--line);
       border-top:3px solid var(--entity-color);
-      border-radius:11px;
-      padding:15px;
+      border-radius:9px;
+      padding:12px;
       transition:transform .2s,border-color .2s,box-shadow .2s
     }
 
@@ -370,7 +372,7 @@
     }
 
     .entity-card:hover{
-      transform:translateY(-3px);
+      transform:translateY(-2px);
       box-shadow:0 8px 28px color-mix(in srgb,var(--entity-color) 13%,transparent)
     }
 
@@ -404,22 +406,22 @@
     /* Tarjetas compactas de personajes */
 
     .character-card{
-      padding:5px 2px 5px 5px
+      padding:4px 2px 4px 4px
     }
 
     .character-content{
       display:grid;
-      grid-template-columns:minmax(0,38%) minmax(0,1fr);
+      grid-template-columns:minmax(0,36%) minmax(0,1fr);
       align-items:center;
-      gap:3px;
-      min-height:90px;
+      gap:2px;
+      min-height:76px;
       position:relative;
       z-index:1
     }
 
     .character-image-wrap{
       width:100%;
-      height:90px;
+      height:76px;
       display:flex;
       align-items:center;
       justify-content:flex-start;
@@ -440,12 +442,12 @@
       display:none;
       align-items:center;
       justify-content:center;
-      width:82px;
-      height:82px;
+      width:70px;
+      height:70px;
       border:1px dashed var(--line);
       border-radius:50%;
       color:var(--muted);
-      font-size:10px
+      font-size:9px
     }
 
     .character-details{
@@ -453,13 +455,13 @@
       flex-direction:column;
       align-items:flex-start;
       justify-content:center;
-      gap:5px;
+      gap:3px;
       min-width:0;
       text-align:left
     }
 
     .card-name{
-      font-size:16px;
+      font-size:14px;
       line-height:1.2;
       font-weight:900;
       overflow-wrap:anywhere;
@@ -472,20 +474,20 @@
       gap:5px;
       width:max-content;
       max-width:100%;
-      padding:3px 7px;
+      padding:2px 6px;
       border:1px solid var(--element-color,var(--line));
       border-radius:5px;
       color:var(--element-color,var(--muted));
       background:rgba(15,23,42,.65);
-      font-size:10px;
+      font-size:9px;
       font-weight:850;
       white-space:nowrap
     }
 
     .element-dot{
-      flex:0 0 7px;
-      width:7px;
-      height:7px;
+      flex:0 0 6px;
+      width:6px;
+      height:6px;
       border-radius:50%;
       background:var(--element-color,var(--muted));
       box-shadow:0 0 7px var(--element-color,var(--muted))
@@ -494,8 +496,8 @@
     .character-detail{
       width:100%;
       color:#E2E8F0;
-      font-size:12px;
-      line-height:1.35;
+      font-size:11px;
+      line-height:1.25;
       font-weight:700;
       text-align:left;
       overflow-wrap:anywhere
@@ -702,7 +704,13 @@
       }
       .tab{padding:10px 7px}
       #search{width:100%}
-      .cards-grid{grid-template-columns:1fr;padding:10px;gap:9px}
+
+      .cards-grid{
+        grid-template-columns:1fr;
+        padding:8px;
+        gap:7px
+      }
+
       .filter-bar{align-items:flex-start}
       .filter-controls{
         display:grid;
@@ -726,20 +734,20 @@
       }
       .filter-reset{width:100%}
 
-      /* Ajuste horizontal de tarjetas en móviles */
+      /* Tarjetas más bajas en móviles */
 
-      .character-card{padding:5px 2px 5px 5px}
+      .character-card{padding:4px 2px 4px 4px}
 
       .character-content{
-        grid-template-columns:minmax(0,36%) minmax(0,1fr);
-        min-height:82px;
-        gap:3px
+        grid-template-columns:minmax(0,34%) minmax(0,1fr);
+        min-height:70px;
+        gap:2px
       }
 
-      .character-image-wrap{height:82px}
-      .character-details{gap:4px}
-      .card-name{font-size:15px}
-      .character-detail{font-size:11px}
+      .character-image-wrap{height:70px}
+      .character-details{gap:3px}
+      .card-name{font-size:13px}
+      .character-detail{font-size:10px}
 
       .install-banner.visible{align-items:stretch}
       .install-actions{width:100%}
