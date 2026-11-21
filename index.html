@@ -404,14 +404,14 @@
     /* Tarjetas compactas de personajes */
 
     .character-card{
-      padding:5px
+      padding:5px 2px 5px 5px
     }
 
     .character-content{
       display:grid;
-      grid-template-columns:minmax(0,42%) minmax(0,1fr);
+      grid-template-columns:minmax(0,38%) minmax(0,1fr);
       align-items:center;
-      gap:6px;
+      gap:3px;
       min-height:90px;
       position:relative;
       z-index:1
@@ -726,14 +726,16 @@
       }
       .filter-reset{width:100%}
 
-      /* Compactación de tarjetas en móviles */
+      /* Ajuste horizontal de tarjetas en móviles */
 
-      .character-card{padding:5px}
+      .character-card{padding:5px 2px 5px 5px}
+
       .character-content{
-        grid-template-columns:minmax(0,40%) minmax(0,1fr);
+        grid-template-columns:minmax(0,36%) minmax(0,1fr);
         min-height:82px;
-        gap:6px
+        gap:3px
       }
+
       .character-image-wrap{height:82px}
       .character-details{gap:4px}
       .card-name{font-size:15px}
