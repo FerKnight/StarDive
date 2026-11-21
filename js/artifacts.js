@@ -8,7 +8,7 @@ import {
 } from './database.js';
 
 // --------------------------------------------------
-// ARTEFACTOS PREMIUM
+// ARTEFACTOS DEL PASE
 // --------------------------------------------------
 
 const PREMIUM_ARTIFACTS = [
@@ -18,31 +18,56 @@ const PREMIUM_ARTIFACTS = [
   'temblores tronidos'
 ];
 
-export function prioritizePremiumArtifacts(rows) {
-  return [...rows].sort((a, b) => {
-    const nameA = normalize(
-      getField(a, ['nombre', 'name']) ?? ''
-    );
+function getArtifactName(record) {
+  return normalize(
+    getField(record, ['nombre', 'name']) ?? ''
+  );
+}
 
-    const nameB = normalize(
-      getField(b, ['nombre', 'name']) ?? ''
-    );
+export function isPremiumArtifact(record) {
+  return PREMIUM_ARTIFACTS.includes(
+    getArtifactName(record)
+  );
+}
 
-    const premiumA = PREMIUM_ARTIFACTS.indexOf(nameA);
-    const premiumB = PREMIUM_ARTIFACTS.indexOf(nameB);
+export function splitArtifactGroups(rows) {
+  const premium = [];
+  const general = [];
 
-    if (premiumA !== -1 && premiumB !== -1) {
-      return premiumA - premiumB;
+  for (const record of rows) {
+    if (isPremiumArtifact(record)) {
+      premium.push(record);
+    } else {
+      general.push(record);
     }
+  }
 
-    if (premiumA !== -1) return -1;
-    if (premiumB !== -1) return 1;
-
-    return nameA.localeCompare(nameB, 'es', {
-      sensitivity: 'base',
-      numeric: true
-    });
+  premium.sort((a, b) => {
+    return PREMIUM_ARTIFACTS.indexOf(getArtifactName(a)) -
+      PREMIUM_ARTIFACTS.indexOf(getArtifactName(b));
   });
+
+  general.sort((a, b) => {
+    const nameA = getField(a, ['nombre', 'name']) ?? '';
+    const nameB = getField(b, ['nombre', 'name']) ?? '';
+
+    return String(nameA).localeCompare(
+      String(nameB),
+      'es',
+      {
+        sensitivity: 'base',
+        numeric: true
+      }
+    );
+  });
+
+  return { premium, general };
+}
+
+export function prioritizePremiumArtifacts(rows) {
+  const groups = splitArtifactGroups(rows);
+
+  return [...groups.premium, ...groups.general];
 }
 
 // --------------------------------------------------
