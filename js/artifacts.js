@@ -1,3 +1,4 @@
+
 import {
   safe,
   escapeHtml,
@@ -17,41 +18,31 @@ const PREMIUM_ARTIFACTS = [
   'temblores tronidos'
 ];
 
-function getArtifactName(record) {
-  return normalize(
-    getField(record, ['nombre', 'name']) ?? ''
-  );
-}
+export function prioritizePremiumArtifacts(rows) {
+  return [...rows].sort((a, b) => {
+    const nameA = normalize(
+      getField(a, ['nombre', 'name']) ?? ''
+    );
 
-function isPremiumArtifact(record) {
-  return PREMIUM_ARTIFACTS.includes(
-    getArtifactName(record)
-  );
-}
+    const nameB = normalize(
+      getField(b, ['nombre', 'name']) ?? ''
+    );
 
-export function prioritizePremiumArtifacts(rows, allRows = rows) {
-  const premium = PREMIUM_ARTIFACTS
-    .map(name =>
-      allRows.find(record =>
-        getArtifactName(record) === name
-      )
-    )
-    .filter(Boolean);
+    const premiumA = PREMIUM_ARTIFACTS.indexOf(nameA);
+    const premiumB = PREMIUM_ARTIFACTS.indexOf(nameB);
 
-  const remaining = rows
-    .filter(record => !isPremiumArtifact(record))
-    .sort((a, b) => {
-      const nameA = getField(a, ['nombre', 'name']) ?? '';
-      const nameB = getField(b, ['nombre', 'name']) ?? '';
+    if (premiumA !== -1 && premiumB !== -1) {
+      return premiumA - premiumB;
+    }
 
-      return String(nameA).localeCompare(
-        String(nameB),
-        'es',
-        { sensitivity: 'base', numeric: true }
-      );
+    if (premiumA !== -1) return -1;
+    if (premiumB !== -1) return 1;
+
+    return nameA.localeCompare(nameB, 'es', {
+      sensitivity: 'base',
+      numeric: true
     });
-
-  return [...premium, ...remaining];
+  });
 }
 
 // --------------------------------------------------
