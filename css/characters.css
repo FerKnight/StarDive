@@ -1,0 +1,209 @@
+.character-grid{
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  grid-auto-rows:110px;
+  align-items:stretch
+}
+
+.entity-card{
+  --entity-color:var(--cyan);
+  position:relative;
+  overflow:hidden;
+  min-width:0;
+  background:linear-gradient(155deg,#202C40,#151D2C 75%);
+  border:1px solid var(--line);
+  border-top:3px solid var(--entity-color);
+  border-radius:9px;
+  padding:12px;
+  transition:transform .2s,border-color .2s,box-shadow .2s
+}
+
+.entity-card:after{
+  content:"";
+  position:absolute;
+  width:130px;
+  height:130px;
+  top:-75px;
+  right:-65px;
+  border-radius:50%;
+  background:var(--entity-color);
+  opacity:.08;
+  filter:blur(30px);
+  pointer-events:none
+}
+
+.entity-card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 28px color-mix(in srgb,var(--entity-color) 13%,transparent)
+}
+
+.rarity-5{
+  --entity-color:var(--gold);
+  border-top-color:var(--gold);
+  background:linear-gradient(155deg,#39321F,#1C1D2A 75%)
+}
+
+.rarity-4{
+  --entity-color:var(--violet);
+  border-top-color:var(--violet)
+}
+
+.element-fuego{--element-color:#FB7185}
+.element-hielo{--element-color:#2563EB}
+.element-viento{--element-color:#7DD3FC}
+.element-tierra{--element-color:#4ADE80}
+.element-rayo{--element-color:#C084FC}
+
+.monster-legendario{
+  --entity-color:var(--gold);
+  border-top-color:var(--gold);
+  background:linear-gradient(155deg,#39321F,#1C1D2A 75%)
+}
+
+.character-card{
+  height:100%;
+  min-height:0;
+  padding:5px
+}
+
+.character-content{
+  display:grid;
+  grid-template-columns:minmax(0,40%) minmax(0,1fr);
+  align-items:center;
+  gap:5px;
+  height:100%;
+  min-height:0;
+  position:relative;
+  z-index:1
+}
+
+.character-image-wrap{
+  width:100%;
+  height:100%;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0;
+  overflow:hidden
+}
+
+.character-image{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:left center;
+  filter:drop-shadow(0 6px 9px rgba(0,0,0,.35))
+}
+
+.character-image-placeholder{
+  display:none;
+  align-items:center;
+  justify-content:center;
+  width:70px;
+  height:70px;
+  border:1px dashed var(--line);
+  border-radius:50%;
+  color:var(--muted);
+  font-size:9px
+}
+
+.character-details{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  gap:4px;
+  min-width:0;
+  padding-right:2px;
+  width:100%;
+  text-align:left
+}
+
+.card-name{
+  font-size:15px;
+  line-height:1.15;
+  font-weight:900;
+  overflow-wrap:anywhere;
+  color:var(--text)
+}
+
+.element-label{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  width:max-content;
+  max-width:100%;
+  padding:3px 5px;
+  border:1px solid var(--element-color,var(--line));
+  border-radius:5px;
+  color:var(--element-color,var(--muted));
+  background:rgba(15,23,42,.65);
+  font-size:10px;
+  font-weight:850;
+  white-space:nowrap
+}
+
+.element-dot{
+  flex:0 0 6px;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--element-color,var(--muted));
+  box-shadow:0 0 7px var(--element-color,var(--muted))
+}
+
+.character-detail{
+  width:100%;
+  color:#E2E8F0;
+  font-size:12px;
+  line-height:1.2;
+  font-weight:700;
+  text-align:left;
+  overflow-wrap:anywhere
+}
+
+.tag{
+  display:inline-flex;
+  align-items:center;
+  padding:4px 8px;
+  border:1px solid var(--entity-color);
+  border-radius:5px;
+  color:var(--entity-color);
+  background:rgba(15,23,42,.65);
+  font-size:10px;
+  font-weight:900;
+  white-space:nowrap
+}
+
+.tag.gold{
+  border-color:var(--gold);
+  color:var(--gold);
+  background:rgba(251,191,36,.09)
+}
+
+.card-divider{
+  height:1px;
+  background:rgba(148,163,184,.15);
+  margin:12px 0
+}
+
+.card-details{display:grid;gap:9px}
+
+.detail{
+  display:grid;
+  grid-template-columns:minmax(80px,.8fr) minmax(0,1.2fr);
+  gap:8px;
+  font-size:12px
+}
+
+.detail-label{
+  color:var(--muted);
+  text-transform:capitalize
+}
+
+.detail-value{
+  color:#E2E8F0;
+  text-align:right;
+  overflow-wrap:anywhere
+}
