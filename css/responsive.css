@@ -1,0 +1,184 @@
+
+/* ========================================
+   RESPONSIVE - TABLETS
+======================================== */
+
+@media (max-width: 1100px) {
+  .artifact-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .character-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* ========================================
+   RESPONSIVE - PANTALLAS MEDIANAS
+======================================== */
+
+@media (max-width: 850px) {
+  .wrap {
+    width: min(100% - 28px, 1240px);
+  }
+
+  .header-content {
+    gap: 14px;
+  }
+
+  .header-search {
+    flex-basis: 42%;
+  }
+
+  h1 {
+    font-size: clamp(30px, 5vw, 46px);
+  }
+
+  .character-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .artifact-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ========================================
+   RESPONSIVE - MÓVILES
+======================================== */
+
+@media (max-width: 600px) {
+  .wrap {
+    width: calc(100% - 20px);
+  }
+
+  .top {
+    padding: 22px 0 18px;
+  }
+
+  .header-content {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 10px;
+  }
+
+  .header-brand {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  h1 {
+    font-size: clamp(23px, 7vw, 34px);
+    gap: 6px;
+  }
+
+  .status {
+    margin-top: 16px;
+    padding: 6px 9px;
+    font-size: 10px;
+  }
+
+  .header-search {
+    flex: 0 0 42%;
+    min-width: 110px;
+    padding-bottom: 0;
+  }
+
+  #search {
+    width: 100%;
+    min-width: 0;
+    padding: 9px 10px;
+    font-size: 12px;
+  }
+
+  .toolbar {
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .tabs {
+    width: 100%;
+    gap: 6px;
+  }
+
+  .tab {
+    flex: 1 1 auto;
+    padding: 9px 8px;
+    font-size: 11px;
+  }
+
+  .filter-bar {
+    padding: 10px;
+  }
+
+  .filter-controls {
+    width: 100%;
+  }
+
+  .filter-item {
+    flex: 1 1 100%;
+  }
+
+  .filter-item > select,
+  .multi-filter-button {
+    width: 100%;
+    max-width: none;
+  }
+
+  .character-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: 100px;
+  }
+
+  .artifact-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .artifact-card-button {
+    grid-template-columns: 76px minmax(0, 1fr);
+    min-height: 88px;
+    gap: 8px;
+    padding: 6px;
+  }
+
+  .artifact-image-wrap {
+    height: 76px;
+  }
+
+  .artifact-name {
+    font-size: 12px;
+  }
+
+  .artifact-meta {
+    font-size: 10px;
+  }
+
+  .install-banner {
+    padding: 12px;
+  }
+}
+
+/* ========================================
+   RESPONSIVE - MÓVILES PEQUEÑOS
+======================================== */
+
+@media (max-width: 380px) {
+  .header-content {
+    gap: 7px;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+
+  .header-search {
+    flex-basis: 44%;
+    min-width: 100px;
+  }
+
+  .character-grid {
+    grid-template-columns: 1fr;
+  }
+}
