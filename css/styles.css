@@ -1,4 +1,3 @@
-
 :root{
   color-scheme:dark;
   --bg:#0F172A;
@@ -574,9 +573,9 @@ input::placeholder{color:#718096}
 
 .artifact-grid{
   display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:10px;
-  padding:12px
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:8px;
+  padding:9px
 }
 
 .artifact-card{
@@ -610,12 +609,12 @@ input::placeholder{color:#718096}
 
 .artifact-card-button{
   display:grid;
-  grid-template-columns:105px minmax(0,1fr);
+  grid-template-columns:82px minmax(0,1fr);
   align-items:center;
-  gap:12px;
+  gap:8px;
   width:100%;
-  min-height:125px;
-  padding:10px;
+  min-height:96px;
+  padding:7px;
   border:0;
   background:transparent;
   color:inherit;
@@ -628,7 +627,7 @@ input::placeholder{color:#718096}
   align-items:center;
   justify-content:center;
   width:100%;
-  height:105px;
+  height:82px;
   overflow:hidden
 }
 
@@ -644,8 +643,8 @@ input::placeholder{color:#718096}
   display:none;
   align-items:center;
   justify-content:center;
-  width:75px;
-  height:75px;
+  width:65px;
+  height:65px;
   border:1px dashed var(--line);
   border-radius:8px;
   color:var(--muted);
@@ -657,12 +656,12 @@ input::placeholder{color:#718096}
   flex-direction:column;
   align-items:flex-start;
   justify-content:center;
-  gap:7px;
+  gap:4px;
   min-width:0
 }
 
 .artifact-name{
-  font-size:14px;
+  font-size:13px;
   line-height:1.2;
   font-weight:900;
   overflow-wrap:anywhere
@@ -671,19 +670,15 @@ input::placeholder{color:#718096}
 .artifact-meta{
   color:#CBD5E1;
   font-size:11px;
-  line-height:1.3;
+  line-height:1.25;
+  font-weight:650;
   overflow-wrap:anywhere
 }
 
-.artifact-meta strong{
-  color:var(--muted);
-  font-weight:700
-}
-
 .artifact-expand-icon{
-  margin-top:2px;
+  margin-top:1px;
   color:var(--entity-color);
-  font-size:10px;
+  font-size:9px;
   font-weight:900
 }
 
@@ -828,8 +823,16 @@ tr:last-child td{border-bottom:0}
 
 /* Adaptación responsive */
 
+@media(max-width:1100px){
+  .artifact-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))
+  }
+}
+
 @media(max-width:1000px){
-  .artifact-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .artifact-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))
+  }
 }
 
 @media(max-width:850px){
@@ -969,20 +972,21 @@ tr:last-child td{border-bottom:0}
 
   .artifact-grid{
     grid-template-columns:1fr;
-    gap:8px;
-    padding:8px
+    gap:7px;
+    padding:7px
   }
 
   .artifact-card-button{
-    grid-template-columns:90px minmax(0,1fr);
-    min-height:108px;
-    gap:10px;
-    padding:8px
+    grid-template-columns:76px minmax(0,1fr);
+    min-height:88px;
+    gap:8px;
+    padding:6px
   }
 
-  .artifact-image-wrap{height:90px}
-  .artifact-name{font-size:13px}
+  .artifact-image-wrap{height:76px}
+  .artifact-name{font-size:12px}
   .artifact-meta{font-size:10px}
+  .artifact-expand-icon{font-size:9px}
 
   .install-banner.visible{align-items:stretch}
   .install-actions{width:100%}
