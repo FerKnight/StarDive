@@ -1,5 +1,5 @@
 
-const CACHE_VERSION = "star-dive-v1";
+const CACHE_VERSION = "star-dive-v2";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const DATA_CACHE = `${CACHE_VERSION}-data`;
 
@@ -7,6 +7,22 @@ const STATIC_FILES = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
+
+  // Estilos
+  "./css/styles.css",
+
+  // Módulos JavaScript
+  "./js/config.js",
+  "./js/database.js",
+  "./js/filters.js",
+  "./js/characters.js",
+  "./js/artifacts.js",
+  "./js/monsterlings.js",
+  "./js/tables.js",
+  "./js/app.js",
+  "./js/pwa.js",
+
+  // Iconos PWA
   "./icons/icon-192.png",
   "./icons/icon-512.png",
   "./icons/apple-touch-icon.png"
