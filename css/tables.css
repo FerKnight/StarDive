@@ -1,0 +1,29 @@
+.tablewrap{overflow:auto}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:600px
+}
+
+th,td{
+  text-align:left;
+  padding:14px 17px;
+  border-bottom:1px solid #29364A;
+  vertical-align:middle;
+  max-width:420px;
+  overflow-wrap:anywhere
+}
+
+th{
+  color:var(--cyan);
+  font-size:10px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  background:#1E293B;
+  font-weight:900
+}
+
+td{color:#E2E8F0;font-size:13px}
+tbody tr:hover{background:rgba(56,189,248,.06)}
+tr:last-child td{border-bottom:0}
