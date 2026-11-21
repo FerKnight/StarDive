@@ -335,7 +335,7 @@
       text-transform:uppercase
     }
 
-    /* Tarjetas */
+    /* Cuadrícula general: se conserva para Monsterlings y otras tarjetas. */
 
     .cards-grid{
       display:grid;
@@ -344,11 +344,11 @@
       padding:10px
     }
 
-    /* Ancho uniforme exclusivo para las tarjetas de personajes. */
-
+    /* Personajes: cinco columnas uniformes en PC. */
     .character-grid{
-      grid-template-columns:repeat(auto-fill,205px);
-      justify-content:start
+      grid-template-columns:repeat(5,minmax(0,1fr));
+      grid-auto-rows:126px;
+      align-items:stretch
     }
 
     .entity-card{
@@ -413,25 +413,29 @@
     /* Tarjetas compactas de personajes */
 
     .character-card{
-      padding:4px 0 4px 4px
+      height:100%;
+      min-height:0;
+      padding:6px
     }
 
     .character-content{
       display:grid;
-      grid-template-columns:minmax(0,36%) minmax(0,1fr);
+      grid-template-columns:minmax(0,40%) minmax(0,1fr);
       align-items:center;
-      gap:2px;
-      min-height:76px;
+      gap:5px;
+      height:100%;
+      min-height:0;
       position:relative;
       z-index:1
     }
 
     .character-image-wrap{
       width:100%;
-      height:76px;
+      height:100%;
+      min-width:0;
       display:flex;
       align-items:center;
-      justify-content:flex-start;
+      justify-content:center;
       margin:0;
       overflow:hidden
     }
@@ -462,16 +466,16 @@
       flex-direction:column;
       align-items:flex-start;
       justify-content:center;
-      gap:3px;
+      gap:4px;
       min-width:0;
-      padding-right:0;
-      width:calc(100% + 6px);
+      padding-right:2px;
+      width:100%;
       text-align:left
     }
 
     .card-name{
-      font-size:14px;
-      line-height:1.2;
+      font-size:15px;
+      line-height:1.15;
       font-weight:900;
       overflow-wrap:anywhere;
       color:var(--text)
@@ -483,12 +487,12 @@
       gap:5px;
       width:max-content;
       max-width:100%;
-      padding:2px 6px;
+      padding:3px 5px;
       border:1px solid var(--element-color,var(--line));
       border-radius:5px;
       color:var(--element-color,var(--muted));
       background:rgba(15,23,42,.65);
-      font-size:9px;
+      font-size:10px;
       font-weight:850;
       white-space:nowrap
     }
@@ -505,8 +509,8 @@
     .character-detail{
       width:100%;
       color:#E2E8F0;
-      font-size:11px;
-      line-height:1.25;
+      font-size:12px;
+      line-height:1.2;
       font-weight:700;
       text-align:left;
       overflow-wrap:anywhere
@@ -720,11 +724,12 @@
         gap:7px
       }
 
-      /* En móviles, personajes de 180 px y Monsterlings sin cambios. */
-
+      /* Personajes: tres columnas uniformes en móviles. */
       .character-grid{
-        grid-template-columns:repeat(auto-fill,180px);
-        justify-content:start
+        grid-template-columns:repeat(3,minmax(0,1fr));
+        grid-auto-rows:126px;
+        gap:6px;
+        padding:8px
       }
 
       .filter-bar{align-items:flex-start}
@@ -750,23 +755,33 @@
       }
       .filter-reset{width:100%}
 
-      /* Tarjetas más bajas en móviles */
+      /* Ajustes de contenido para las tarjetas de personajes en móviles. */
 
-      .character-card{padding:4px 0 4px 4px}
+      .character-card{padding:5px 3px}
 
       .character-content{
-        grid-template-columns:minmax(0,34%) minmax(0,1fr);
-        min-height:70px;
-        gap:2px
+        grid-template-columns:minmax(0,40%) minmax(0,1fr);
+        gap:3px
       }
 
-      .character-image-wrap{height:70px}
+      .character-image-wrap{height:100%}
       .character-details{
         gap:3px;
-        padding-right:0
+        padding-right:1px
       }
-      .card-name{font-size:13px}
-      .character-detail{font-size:10px}
+      .card-name{font-size:12px}
+      .element-label{
+        gap:3px;
+        padding:2px 4px;
+        font-size:8px;
+        white-space:normal
+      }
+      .element-dot{
+        flex-basis:5px;
+        width:5px;
+        height:5px
+      }
+      .character-detail{font-size:9px}
 
       .install-banner.visible{align-items:stretch}
       .install-actions{width:100%}
@@ -1116,12 +1131,10 @@
           return '<div class="empty">Todavía no hay registros publicados en esta categoría.</div>';
         }
 
-        const gridClass = category === 'personajes'
-          ? 'cards-grid character-grid'
-          : 'cards-grid';
-
         return (
-          '<div class="' + gridClass + '">' +
+          '<div class="cards-grid' +
+            (category === 'personajes' ? ' character-grid' : '') +
+            '">' +
           rows.map(record =>
             category === 'personajes'
               ? renderCharacterCard(record)
