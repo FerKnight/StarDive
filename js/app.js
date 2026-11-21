@@ -25,7 +25,8 @@ import {
 } from './characters.js';
 
 import {
-  renderArtifactCards
+  renderArtifactCards,
+  prioritizePremiumArtifacts
 } from './artifacts.js';
 
 import {
@@ -239,8 +240,14 @@ function globalResults(query) {
     }
   }
 
+  // Orden de resultados: los artefactos premium siempre primero.
   for (const group of groups) {
-    if (group.key !== 'monsterlings') {
+    if (group.key === 'artefactos') {
+      group.rows = prioritizePremiumArtifacts(
+        group.rows,
+        recordsFor('artefactos')
+      );
+    } else if (group.key !== 'monsterlings') {
       group.rows = sortAlphabetically(group.rows);
     }
   }
@@ -316,6 +323,11 @@ function renderContent() {
   rows = filterManager.apply(rows);
 
   if (active === 'artefactos') {
+    rows = prioritizePremiumArtifacts(
+      rows,
+      recordsFor(dataKey)
+    );
+
     content.innerHTML = renderArtifactCards(rows);
     return;
   }
