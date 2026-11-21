@@ -1,4 +1,3 @@
-
 import {
   safe,
   escapeHtml,
@@ -134,12 +133,12 @@ export function renderArtifactCard(record, index) {
         '<div class="artifact-info">' +
           '<div class="artifact-name">' + escapeHtml(name) + '</div>' +
           (role !== undefined && role !== null && role !== ''
-            ? '<div class="artifact-meta"><strong>Rol:</strong> ' +
+            ? '<div class="artifact-meta">' +
                 escapeHtml(safe(role)) +
               '</div>'
             : '') +
           (substat !== undefined && substat !== null && substat !== ''
-            ? '<div class="artifact-meta"><strong>Subestadística:</strong> ' +
+            ? '<div class="artifact-meta">' +
                 escapeHtml(safe(substat)) +
               '</div>'
             : '') +
