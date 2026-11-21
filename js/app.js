@@ -143,8 +143,6 @@ function renderCards(rows, category) {
 // --------------------------------------------------
 
 function renderArtifactSections(rows) {
-  // La separación se hace sobre los registros que ya pasaron
-  // por los filtros y la búsqueda.
   const groups = splitArtifactGroups(rows);
 
   let html = '';
@@ -160,7 +158,6 @@ function renderArtifactSections(rows) {
   if (groups.general.length) {
     html +=
       '<section class="artifact-section">' +
-        '<h2 class="group-title">Artefactos en general</h2>' +
         renderArtifactCards(groups.general) +
       '</section>';
   }
@@ -205,14 +202,13 @@ function globalResults(query) {
     ? characterGroup.rows
     : [];
 
-  // Esta lista contiene exclusivamente coincidencias directas
-  // de la búsqueda en los registros de artefactos.
   const artifactRows = artifactGroup
-    ? artifactGroup.rows.filter(matchesArtifact => matchesQuery(matchesArtifact, query))
+    ? artifactGroup.rows.filter(record =>
+        matchesQuery(record, query)
+      )
     : [];
 
   // Si aparece un personaje, también se busca su artefacto vinculado.
-  // Se conservan únicamente los artefactos que coinciden con la búsqueda.
   for (const character of matchedCharacters) {
     const characterName = normalize(
       getField(character, ['nombre', 'name'])
@@ -285,7 +281,6 @@ function globalResults(query) {
 
   for (const group of groups) {
     if (group.key === 'artefactos') {
-      // Se excluyen los premium del grupo general.
       group.rows = artifactRows.filter(
         record => !isPremiumArtifact(record)
       );
@@ -294,17 +289,15 @@ function globalResults(query) {
     }
   }
 
-  // Añade un grupo de artefactos premium solo si hay coincidencias.
+  // Los premium solo aparecen si coinciden con la búsqueda.
   const premiumMatches = artifactRows.filter(isPremiumArtifact);
 
   if (premiumMatches.length) {
-    const premiumGroup = {
+    groups.push({
       key: 'artefactos-pase',
       label: 'Artefactos del pase',
       rows: splitArtifactGroups(premiumMatches).premium
-    };
-
-    groups.push(premiumGroup);
+    });
   }
 
   return groups.filter(group => group.rows.length);
@@ -320,7 +313,6 @@ function renderGroup(group) {
 
     return (
       '<section class="artifact-section">' +
-        '<h2 class="group-title">Artefactos en general</h2>' +
         renderArtifactCards(group.rows) +
       '</section>'
     );
