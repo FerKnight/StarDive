@@ -54,6 +54,19 @@ button,input,select{font:inherit}
   pointer-events:none
 }
 
+.header-content{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:24px;
+  position:relative;
+  z-index:1
+}
+
+.header-brand{
+  min-width:0
+}
+
 h1{
   font-size:clamp(36px,6vw,62px);
   line-height:1;
@@ -95,6 +108,15 @@ h1{
 }
 
 .dot.live{background:var(--green)}
+
+.header-search{
+  display:flex;
+  justify-content:flex-end;
+  align-items:flex-end;
+  flex:0 1 360px;
+  min-width:220px;
+  padding-bottom:2px
+}
 
 .toolbar{
   display:flex;
@@ -151,7 +173,10 @@ input:focus,select:focus{
 
 input::placeholder{color:#718096}
 
-#search{width:min(360px,100%)}
+#search{
+  width:100%;
+  max-width:360px
+}
 
 /* Filtros */
 
@@ -804,13 +829,32 @@ tr:last-child td{border-bottom:0}
 @media(max-width:600px){
   .wrap{width:min(100% - 24px,1240px)}
   .top{padding:26px 0 20px}
+
+  .header-content{
+    flex-direction:column;
+    align-items:stretch;
+    gap:18px
+  }
+
+  .header-search{
+    flex:initial;
+    width:100%;
+    min-width:0;
+    padding:0
+  }
+
+  #search{
+    width:100%;
+    max-width:none
+  }
+
   .toolbar{align-items:stretch}
   .tabs{
     display:grid;
     grid-template-columns:repeat(2,minmax(0,1fr))
   }
+
   .tab{padding:10px 7px}
-  #search{width:100%}
 
   .cards-grid{
     grid-template-columns:1fr;
