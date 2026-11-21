@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-11-19T03:50:15.849Z",
+  "generatedAt": "2026-11-21T05:54:08.018Z",
   "personajes": [
     {
       "id": "angel",
@@ -332,7 +332,7 @@
       "personaje_propio": "Angel"
     },
     {
-      "nombre": "Determinacion del cazador de tigres",
+      "nombre": "Determinación del cazador de tigres",
       "grado": "4",
       "rol": "Asesino",
       "Sub estadistica": "ATQ 20.25%",
@@ -340,7 +340,7 @@
       "personaje_propio": "Leeho"
     },
     {
-      "nombre": "Escama blanca del dragon serpenteante",
+      "nombre": "Escama blanca del dragón serpenteante",
       "grado": "5",
       "rol": "Destructor",
       "Sub estadistica": "ATQ 27%",
@@ -380,7 +380,7 @@
       "personaje_propio": "Daisy"
     },
     {
-      "nombre": "Fuego de dragon exquisito",
+      "nombre": "Fuego de dragón exquisito",
       "grado": "5",
       "rol": "Destructor",
       "Sub estadistica": "Potenciador de daño de fuego 27%",
@@ -412,7 +412,7 @@
       "personaje_propio": ""
     },
     {
-      "nombre": "Inversion inteligente",
+      "nombre": "Inversión inteligente",
       "grado": "5",
       "rol": "Luchador",
       "Sub estadistica": "Carga del medidor de suprema 15%",
@@ -532,7 +532,7 @@
       "personaje_propio": "Narae"
     },
     {
-      "nombre": "Subidon de azucar",
+      "nombre": "Subidón de azucar",
       "grado": "4",
       "rol": "Destructor",
       "Sub estadistica": "ATQ 20.25%",
@@ -572,7 +572,7 @@
       "personaje_propio": "Francis Verano"
     },
     {
-      "nombre": "Veredicto gelido",
+      "nombre": "Veredicto gélido",
       "grado": "5",
       "rol": "Luchador",
       "Sub estadistica": "Daño crítico 45%",
@@ -580,7 +580,7 @@
       "personaje_propio": "Ophelia"
     },
     {
-      "nombre": "Vuelo del halcon",
+      "nombre": "Vuelo del halcón",
       "grado": "4",
       "rol": "Asesino",
       "Sub estadistica": "ATQ 20.25%",
@@ -588,7 +588,7 @@
       "personaje_propio": "Benjamin"
     },
     {
-      "nombre": "Adiccion a las explosiones irreprimible",
+      "nombre": "Adicción a las explosiones irreprimible",
       "grado": "5",
       "rol": "Asesino",
       "Sub estadistica": "ATQ 27%",
