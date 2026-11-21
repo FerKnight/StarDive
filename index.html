@@ -1017,12 +1017,8 @@
         artefactos: [
           {field:'grado',label:'Grado',aliases:['grado','rareza','rarity']},
           {field:'rol',label:'Rol',aliases:['rol','role']},
-          {field:'elemento',label:'Elemento',aliases:['elemento','element']},
-          {
-            field:'efectos',
-            label:'Efectos',
-            aliases:['efectos','efecto_tipo','tipo_efecto','categoria_efecto','clase_efecto','efecto']
-          }
+          {field:'elemento',label:'Elemento'},
+          {field:'efectos',label:'Efectos'}
         ],
         monsterlings: [
           {field:'tipo',label:'Tipo',aliases:['tipo','type']},
@@ -1082,6 +1078,73 @@
 
         return undefined;
       };
+
+      /*
+       * Los elementos y tipos de efecto de los artefactos se extraen
+       * exclusivamente del texto de "efecto de habilidad".
+       */
+      function getArtifactEffect(record){
+        return String(getField(record,[
+          'efecto de habilidad',
+          'efecto_habilidad',
+          'efecto_de_habilidad',
+          'descripcion_habilidad',
+          'descripción_habilidad',
+          'habilidad',
+          'descripcion_efecto',
+          'descripción_efecto',
+          'skill_effect',
+          'effect_description'
+        ]) || '');
+      }
+
+      function containsEffectTerm(text,term){
+        const escaped = term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+        const expression = new RegExp(
+          '(^|[^a-z0-9])' + escaped + '([^a-z0-9]|$)',
+          'i'
+        );
+
+        return expression.test(text);
+      }
+
+      function getArtifactEffectTags(record,field){
+        const effect = normalize(getArtifactEffect(record));
+        const tags = [];
+
+        if(field === 'elemento'){
+          const elements = [
+            ['Fuego',['fuego']],
+            ['Hielo',['hielo']],
+            ['Viento',['viento']],
+            ['Tierra',['tierra']],
+            ['Rayo',['rayo','electrico','electricidad']]
+          ];
+
+          for(const [label,terms] of elements){
+            if(terms.some(term => containsEffectTerm(effect,normalize(term)))){
+              tags.push(label);
+            }
+          }
+        }
+
+        if(field === 'efectos'){
+          const types = [
+            ['Apoyo',['apoyo']],
+            ['Contención',['contencion']],
+            ['Neutralización',['neutralizacion']],
+            ['Refriega',['refriega']]
+          ];
+
+          for(const [label,terms] of types){
+            if(terms.some(term => containsEffectTerm(effect,normalize(term)))){
+              tags.push(label);
+            }
+          }
+        }
+
+        return tags;
+      }
 
       function getRecordName(record){
         return getField(record,['nombre','name','numero','id']) ?? '';
@@ -1211,19 +1274,7 @@
           'subestadística','sub_stat','substat'
         ]);
 
-        const effect = getField(record,[
-          'efecto_habilidad',
-          'efecto de habilidad',
-          'efecto_de_habilidad',
-          'descripcion_habilidad',
-          'descripción_habilidad',
-          'habilidad',
-          'descripcion_efecto',
-          'descripción_efecto',
-          'skill_effect',
-          'effect_description',
-          'efecto'
-        ]);
+        const effect = getArtifactEffect(record);
 
         const image = imagePath('artefactos',name);
         const id = 'artifact-' + index;
@@ -1253,7 +1304,7 @@
             '</button>' +
             '<div class="artifact-effect" id="' + id + '">' +
               '<span class="artifact-effect-title">Efecto de habilidad</span>' +
-              escapeHtml(safe(effect)) +
+              escapeHtml(effect || 'Sin descripción disponible.') +
             '</div>' +
           '</article>'
         );
@@ -1417,6 +1468,19 @@
       }
 
       function getFilterOptions(rows,definition){
+        if(
+          active === 'artefactos' &&
+          (definition.field === 'elemento' || definition.field === 'efectos')
+        ){
+          const values = rows.flatMap(record =>
+            getArtifactEffectTags(record,definition.field)
+          );
+
+          return [...new Set(values)].sort((a,b) =>
+            a.localeCompare(b,'es',{sensitivity:'base'})
+          );
+        }
+
         const values = rows
           .map(record => getFilterValue(record,definition))
           .filter(value =>
@@ -1595,6 +1659,21 @@
               (Array.isArray(selectedValue) && selectedValue.length === 0)
             ){
               return true;
+            }
+
+            // Elemento y efectos se comparan con las etiquetas extraídas
+            // del texto de la habilidad del artefacto.
+            if(
+              active === 'artefactos' &&
+              (definition.field === 'elemento' || definition.field === 'efectos')
+            ){
+              const tags = getArtifactEffectTags(record,definition.field);
+
+              if(Array.isArray(selectedValue)){
+                return selectedValue.some(value => tags.includes(value));
+              }
+
+              return tags.includes(selectedValue);
             }
 
             const recordValue = safe(getFilterValue(record,definition));
