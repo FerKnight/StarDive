@@ -338,8 +338,8 @@
     .cards-grid{
       display:grid;
       grid-template-columns:repeat(auto-fill,minmax(245px,1fr));
-      gap:13px;
-      padding:16px
+      gap:11px;
+      padding:13px
     }
 
     .entity-card{
@@ -401,37 +401,78 @@
       background:linear-gradient(155deg,#39321F,#1C1D2A 75%)
     }
 
-    /* Tarjetas de personajes */
+    /* Tarjetas compactas de personajes */
 
     .character-card{
-      padding:15px
+      padding:10px
     }
 
-    .character-name-row{
-      display:flex;
-      justify-content:flex-start;
+    .character-content{
+      display:grid;
+      grid-template-columns:minmax(0,42%) minmax(0,1fr);
       align-items:center;
-      flex-wrap:wrap;
-      gap:8px;
-      width:100%;
-      min-height:30px;
-      margin-bottom:12px;
+      gap:12px;
+      min-height:125px;
       position:relative;
       z-index:1
     }
 
+    .character-image-wrap{
+      width:100%;
+      height:125px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin:0;
+      overflow:hidden
+    }
+
+    .character-image{
+      display:block;
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      object-position:center;
+      filter:drop-shadow(0 6px 9px rgba(0,0,0,.35))
+    }
+
+    .character-image-placeholder{
+      display:none;
+      align-items:center;
+      justify-content:center;
+      width:82px;
+      height:82px;
+      border:1px dashed var(--line);
+      border-radius:50%;
+      color:var(--muted);
+      font-size:10px
+    }
+
+    .character-details{
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      justify-content:center;
+      gap:5px;
+      min-width:0;
+      text-align:left
+    }
+
     .card-name{
-      font-size:17px;
-      line-height:1.3;
-      font-weight:850;
-      overflow-wrap:anywhere
+      font-size:16px;
+      line-height:1.2;
+      font-weight:900;
+      overflow-wrap:anywhere;
+      color:var(--text)
     }
 
     .element-label{
       display:inline-flex;
       align-items:center;
       gap:5px;
-      padding:3px 8px;
+      width:max-content;
+      max-width:100%;
+      padding:3px 7px;
       border:1px solid var(--element-color,var(--line));
       border-radius:5px;
       color:var(--element-color,var(--muted));
@@ -442,6 +483,7 @@
     }
 
     .element-dot{
+      flex:0 0 7px;
       width:7px;
       height:7px;
       border-radius:50%;
@@ -449,63 +491,13 @@
       box-shadow:0 0 7px var(--element-color,var(--muted))
     }
 
-    .character-content{
-      display:grid;
-      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-      align-items:center;
-      gap:14px;
-      position:relative;
-      z-index:1
-    }
-
-    .character-image-wrap{
-      width:100%;
-      height:155px;
-      display:flex;
-      align-items:center;
-      justify-content:flex-start;
-      margin:0
-    }
-
-    .character-image{
-      display:block;
-      max-width:100%;
-      max-height:100%;
-      width:auto;
-      height:auto;
-      object-fit:contain;
-      object-position:left center;
-      filter:drop-shadow(0 8px 12px rgba(0,0,0,.35))
-    }
-
-    .character-image-placeholder{
-      display:none;
-      align-items:center;
-      justify-content:center;
-      width:100px;
-      height:100px;
-      border:1px dashed var(--line);
-      border-radius:50%;
-      color:var(--muted);
-      font-size:11px
-    }
-
-    .character-details{
-      display:flex;
-      flex-direction:column;
-      align-items:flex-end;
-      justify-content:center;
-      gap:12px;
-      min-width:0;
-      text-align:right
-    }
-
     .character-detail{
       width:100%;
       color:#E2E8F0;
-      font-size:13px;
-      font-weight:750;
-      text-align:right;
+      font-size:12px;
+      line-height:1.35;
+      font-weight:700;
+      text-align:left;
       overflow-wrap:anywhere
     }
 
@@ -710,7 +702,7 @@
       }
       .tab{padding:10px 7px}
       #search{width:100%}
-      .cards-grid{grid-template-columns:1fr;padding:13px}
+      .cards-grid{grid-template-columns:1fr;padding:10px;gap:9px}
       .filter-bar{align-items:flex-start}
       .filter-controls{
         display:grid;
@@ -733,12 +725,15 @@
         min-width:0
       }
       .filter-reset{width:100%}
+      .character-card{padding:9px}
       .character-content{
-        grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+        grid-template-columns:minmax(0,40%) minmax(0,1fr);
+        min-height:112px;
         gap:10px
       }
-      .character-image-wrap{height:140px}
-      .character-details{gap:10px}
+      .character-image-wrap{height:112px}
+      .character-details{gap:5px}
+      .card-name{font-size:15px}
       .character-detail{font-size:12px}
       .install-banner.visible{align-items:stretch}
       .install-actions{width:100%}
@@ -996,16 +991,6 @@
           '<article class="entity-card character-card ' +
             rarityClass(record) + ' ' + elementClass(record) + '">' +
 
-            '<div class="character-name-row">' +
-              '<span class="card-name">' + escapeHtml(name) + '</span>' +
-              (element !== undefined
-                ? '<span class="element-label">' +
-                    '<span class="element-dot"></span>' +
-                    escapeHtml(safe(element)) +
-                  '</span>'
-                : '') +
-            '</div>' +
-
             '<div class="character-content">' +
 
               '<div class="character-image-wrap">' +
@@ -1017,16 +1002,25 @@
                 '<div class="character-image-placeholder">Sin imagen</div>' +
               '</div>' +
 
-              (details.length
-                ? '<div class="character-details">' +
-                    details.map(value =>
-                      '<div class="character-detail">' +
-                        escapeHtml(safe(value)) +
-                      '</div>'
-                    ).join('') +
-                  '</div>'
-                : '<div class="character-details"></div>') +
+              '<div class="character-details">' +
+                '<div class="card-name">' +
+                  escapeHtml(name) +
+                '</div>' +
 
+                (element !== undefined && element !== null && element !== ''
+                  ? '<span class="element-label">' +
+                      '<span class="element-dot"></span>' +
+                      escapeHtml(safe(element)) +
+                    '</span>'
+                  : '') +
+
+                details.map(value =>
+                  '<div class="character-detail">' +
+                    escapeHtml(safe(value)) +
+                  '</div>'
+                ).join('') +
+
+              '</div>' +
             '</div>' +
           '</article>'
         );
