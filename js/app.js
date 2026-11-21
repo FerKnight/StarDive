@@ -143,7 +143,10 @@ function renderCards(rows, category) {
 // --------------------------------------------------
 
 function renderArtifactSections(rows) {
+  // La separación se hace sobre los registros que ya pasaron
+  // por los filtros y la búsqueda.
   const groups = splitArtifactGroups(rows);
+
   let html = '';
 
   if (groups.premium.length) {
@@ -202,11 +205,14 @@ function globalResults(query) {
     ? characterGroup.rows
     : [];
 
+  // Esta lista contiene exclusivamente coincidencias directas
+  // de la búsqueda en los registros de artefactos.
   const artifactRows = artifactGroup
-    ? artifactGroup.rows
+    ? artifactGroup.rows.filter(matchesArtifact => matchesQuery(matchesArtifact, query))
     : [];
 
   // Si aparece un personaje, también se busca su artefacto vinculado.
+  // Se conservan únicamente los artefactos que coinciden con la búsqueda.
   for (const character of matchedCharacters) {
     const characterName = normalize(
       getField(character, ['nombre', 'name'])
@@ -241,15 +247,9 @@ function globalResults(query) {
         (linkedName && artifactName === linkedName) ||
         (characterName && owner === characterName);
 
-      // Los premium solo aparecen si coinciden directamente
-      // con el texto escrito en el buscador.
-      const premiumMatchesSearch =
-        !isPremiumArtifact(artifact) ||
-        matchesQuery(artifact, query);
-
       if (
         related &&
-        premiumMatchesSearch &&
+        matchesQuery(artifact, query) &&
         !artifactRows.includes(artifact)
       ) {
         artifactRows.push(artifact);
@@ -285,10 +285,26 @@ function globalResults(query) {
 
   for (const group of groups) {
     if (group.key === 'artefactos') {
-      group.rows = sortAlphabetically(group.rows);
+      // Se excluyen los premium del grupo general.
+      group.rows = artifactRows.filter(
+        record => !isPremiumArtifact(record)
+      );
     } else if (group.key !== 'monsterlings') {
       group.rows = sortAlphabetically(group.rows);
     }
+  }
+
+  // Añade un grupo de artefactos premium solo si hay coincidencias.
+  const premiumMatches = artifactRows.filter(isPremiumArtifact);
+
+  if (premiumMatches.length) {
+    const premiumGroup = {
+      key: 'artefactos-pase',
+      label: 'Artefactos del pase',
+      rows: splitArtifactGroups(premiumMatches).premium
+    };
+
+    groups.push(premiumGroup);
   }
 
   return groups.filter(group => group.rows.length);
@@ -300,7 +316,23 @@ function globalResults(query) {
 
 function renderGroup(group) {
   if (group.key === 'artefactos') {
-    return renderArtifactSections(group.rows);
+    if (!group.rows.length) return '';
+
+    return (
+      '<section class="artifact-section">' +
+        '<h2 class="group-title">Artefactos en general</h2>' +
+        renderArtifactCards(group.rows) +
+      '</section>'
+    );
+  }
+
+  if (group.key === 'artefactos-pase') {
+    return (
+      '<section class="artifact-section">' +
+        '<h2 class="group-title">Artefactos del pase</h2>' +
+        renderArtifactCards(group.rows) +
+      '</section>'
+    );
   }
 
   const cards =
