@@ -35,6 +35,10 @@ import {
 } from './monsterlings.js';
 
 import {
+  renderEquipmentCards
+} from './equipamientos.js';
+
+import {
   renderTable
 } from './tables.js';
 
@@ -133,6 +137,10 @@ function renderCards(rows, category) {
 
   if (category === 'monsterlings') {
     return renderMonsterCards(rows);
+  }
+
+  if (category === 'equipamientos') {
+    return renderEquipmentCards(rows);
   }
 
   return '<div class="empty">No hay tarjetas disponibles.</div>';
@@ -329,7 +337,8 @@ function renderGroup(group) {
 
   const cards =
     group.key === 'personajes' ||
-    group.key === 'monsterlings';
+    group.key === 'monsterlings' ||
+    group.key === 'equipamientos';
 
   return (
     '<section class="result-group">' +
@@ -385,7 +394,8 @@ function renderContent() {
 
   const renderCategory =
     active === 'personajes' ||
-    active === 'monsterlings';
+    active === 'monsterlings' ||
+    active === 'equipamientos';
 
   content.innerHTML = renderCategory
     ? renderCards(rows, active)
