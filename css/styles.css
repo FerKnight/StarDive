@@ -1,3 +1,4 @@
+
 @import url("./base.css");
 @import url("./header.css");
 @import url("./navigation.css");
@@ -6,6 +7,7 @@
 @import url("./layout.css");
 @import url("./characters.css");
 @import url("./artifacts.css");
+@import url("./equipamientos.css");
 @import url("./tables.css");
 @import url("./pwa.css");
 @import url("./responsive.css");
