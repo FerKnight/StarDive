@@ -8,9 +8,9 @@ export const categories = [
 
 export const searchableCategories = [
   {key:'personajes',label:'Personajes'},
-  {key:'artefactos',label:'Artefactos'},
+  {key:'artefactos',label:'Artefactos',dataKey:'artefactos'},
   {key:'equipamientos',label:'Equipamientos',dataKey:'conjuntos'},
-  {key:'monsterlings',label:'Monsterlings'},
+  {key:'monsterlings',label:'Monsterlings',dataKey:'monsterlings'},
   {key:'regiones',label:'Regiones'}
 ];
 
@@ -29,13 +29,14 @@ export const filterDefinitions = {
     {field:'efectos',label:'Efectos'}
   ],
 
+  equipamientos: [
+    {field:'bonus_piezas',label:'Efecto de piezas'},
+    {field:'tipo_efecto',label:'Tipo de efecto'},
+    {field:'elemento',label:'Elemento'}
+  ],
+
   monsterlings: [
     {field:'tipo',label:'Tipo',aliases:['tipo','type']},
     {field:'region',label:'Región',aliases:['region','región']}
-  ],
-
-  equipamientos: [
-    {field:'efecto_2_piezas',label:'Bonificación 2 piezas',aliases:['efecto_2_piezas']},
-    {field:'efecto_4_piezas',label:'Bonificación 4 piezas',aliases:['efecto_4_piezas']}
   ]
 };
