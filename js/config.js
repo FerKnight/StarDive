@@ -30,9 +30,8 @@ export const filterDefinitions = {
   ],
 
   equipamientos: [
-    {field:'bonus_piezas',label:'Efecto de piezas'},
-    {field:'tipo_efecto',label:'Tipo de efecto'},
-    {field:'elemento',label:'Elemento'}
+    {field:'elemento',label:'Elemento'},
+    {field:'tipo_efecto',label:'Tipo de efecto'}
   ],
 
   monsterlings: [
