@@ -16,6 +16,10 @@ import {
   getArtifactEffectTags
 } from './artifacts.js';
 
+import {
+  getEquipmentEffectTags
+} from './equipamientos.js';
+
 export function createFilterManager({
   getActive,
   filterState,
@@ -70,8 +74,51 @@ export function createFilterManager({
     }));
   }
 
+  // --------------------------------------------------
+  // OPCIONES DE FILTROS
+  // --------------------------------------------------
+
+  function getEquipmentBonusOptions(rows) {
+    const options = [];
+
+    if (rows.some(record =>
+      safe(getField(record, ['efecto_2_piezas'])) !== '—'
+    )) {
+      options.push('Efecto de 2 piezas');
+    }
+
+    if (rows.some(record =>
+      safe(getField(record, ['efecto_4_piezas'])) !== '—'
+    )) {
+      options.push('Efecto de 4 piezas');
+    }
+
+    return options;
+  }
+
   function getFilterOptions(rows, definition) {
     const active = getActive();
+
+    if (active === 'equipamientos') {
+      if (definition.field === 'bonus_piezas') {
+        return getEquipmentBonusOptions(rows);
+      }
+
+      if (
+        definition.field === 'tipo_efecto' ||
+        definition.field === 'elemento'
+      ) {
+        const values = rows.flatMap(record =>
+          getEquipmentEffectTags(record, definition.field)
+        );
+
+        return [...new Set(values)].sort((a, b) =>
+          a.localeCompare(b, 'es', {
+            sensitivity: 'base'
+          })
+        );
+      }
+    }
 
     if (
       active === 'artefactos' &&
@@ -108,6 +155,10 @@ export function createFilterManager({
     );
   }
 
+  // --------------------------------------------------
+  // FILTROS DE SELECCIÓN MÚLTIPLE
+  // --------------------------------------------------
+
   function renderMultiFilter(definition, options, current) {
     const selected = Array.isArray(current) ? current : [];
     const count = selected.length;
@@ -142,6 +193,10 @@ export function createFilterManager({
       '</div>'
     );
   }
+
+  // --------------------------------------------------
+  // RENDERIZAR FILTROS
+  // --------------------------------------------------
 
   function render() {
     const active = getActive();
@@ -245,6 +300,10 @@ export function createFilterManager({
     });
   }
 
+  // --------------------------------------------------
+  // APLICAR FILTROS
+  // --------------------------------------------------
+
   function apply(rows) {
     const active = getActive();
     const definitions = getFilterDefinitions();
@@ -265,8 +324,58 @@ export function createFilterManager({
           return true;
         }
 
-        // Los filtros de elemento y efectos de artefactos
-        // utilizan las etiquetas extraídas de su habilidad.
+        // Filtros de bonus de Equipamientos.
+        if (
+          active === 'equipamientos' &&
+          definition.field === 'bonus_piezas'
+        ) {
+          const effects = [
+            safe(getField(record, ['efecto_2_piezas'])),
+            safe(getField(record, ['efecto_4_piezas']))
+          ];
+
+          const available = [];
+
+          if (effects[0] !== '—') {
+            available.push('Efecto de 2 piezas');
+          }
+
+          if (effects[1] !== '—') {
+            available.push('Efecto de 4 piezas');
+          }
+
+          if (Array.isArray(selectedValue)) {
+            return selectedValue.some(value =>
+              available.includes(value)
+            );
+          }
+
+          return available.includes(selectedValue);
+        }
+
+        // Filtros automáticos de tipo y elemento de Equipamientos.
+        if (
+          active === 'equipamientos' &&
+          (
+            definition.field === 'tipo_efecto' ||
+            definition.field === 'elemento'
+          )
+        ) {
+          const tags = getEquipmentEffectTags(
+            record,
+            definition.field
+          );
+
+          if (Array.isArray(selectedValue)) {
+            return selectedValue.some(value =>
+              tags.includes(value)
+            );
+          }
+
+          return tags.includes(selectedValue);
+        }
+
+        // Filtros de elemento y efectos de Artefactos.
         if (
           active === 'artefactos' &&
           (
@@ -301,6 +410,10 @@ export function createFilterManager({
     );
   }
 
+  // --------------------------------------------------
+  // RESTABLECER FILTROS
+  // --------------------------------------------------
+
   function reset() {
     const active = getActive();
 
@@ -309,6 +422,10 @@ export function createFilterManager({
     render();
     onContentChange();
   }
+
+  // --------------------------------------------------
+  // EVENTOS
+  // --------------------------------------------------
 
   function init() {
     document.addEventListener('click', event => {
