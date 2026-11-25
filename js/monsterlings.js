@@ -61,31 +61,29 @@ export function renderMonsterCard(record) {
   return (
     '<article class="entity-card monster-card">' +
 
+      '<div class="monster-card-heading">' +
+        '<div class="card-name">' +
+          escapeHtml(name) +
+        '</div>' +
+      '</div>' +
+
       '<div class="monster-card-image-wrap">' +
+
         '<img class="monster-card-image" ' +
           'src="' + escapeHtml(image) + '" ' +
           'alt="' + escapeHtml(name) + '" ' +
           'loading="lazy" ' +
           'onerror="this.style.display=\'none\'">' +
+
+        (number !== undefined && number !== ''
+          ? '<div class="monster-card-number">' +
+              escapeHtml(safe(number)) +
+            '</div>'
+          : '') +
+
       '</div>' +
 
       '<div class="monster-card-content">' +
-
-        '<div class="card-top">' +
-          '<div>' +
-
-            (number !== undefined
-              ? '<div class="card-number">N.º ' +
-                  escapeHtml(safe(number)) +
-                '</div>'
-              : '') +
-
-            '<div class="card-name">' +
-              escapeHtml(name) +
-            '</div>' +
-
-          '</div>' +
-        '</div>' +
 
         (effect
           ? '<div class="monster-card-detail">' +
@@ -97,12 +95,15 @@ export function renderMonsterCard(record) {
           : '') +
 
         (link
-          ? '<div class="monster-card-detail">' +
-              '<span class="detail-label">Enlace</span>' +
-              '<div class="detail-value">' +
+          ? '<details class="monster-card-link">' +
+              '<summary class="monster-card-link-toggle">' +
+                '<span>Enlace</span>' +
+                '<span class="monster-card-link-arrow" aria-hidden="true"></span>' +
+              '</summary>' +
+              '<div class="monster-card-link-content">' +
                 escapeHtml(safe(link)) +
               '</div>' +
-            '</div>'
+            '</details>'
           : '') +
 
       '</div>' +
