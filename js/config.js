@@ -35,7 +35,10 @@ export const filterDefinitions = {
   ],
 
   monsterlings: [
-    {field:'tipo',label:'Tipo',aliases:['tipo','type']},
-    {field:'region',label:'Región',aliases:['region','región']}
+    {field:'region',label:'Región',aliases:['region','región']},
+    {field:'enlace',label:'Enlace'},
+    {field:'elemento',label:'Elemento'},
+    {field:'rol',label:'Rol'},
+    {field:'estadisticas',label:'Estadísticas'}
   ]
 };
