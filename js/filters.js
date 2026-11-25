@@ -20,6 +20,152 @@ import {
   getEquipmentEffectTags
 } from './equipamientos.js';
 
+
+// --------------------------------------------------
+// DETECCIÓN AUTOMÁTICA DE MONSTERLINGS
+// --------------------------------------------------
+
+const monsterlingElements = [
+  'Fuego',
+  'Hielo',
+  'Tierra',
+  'Rayo',
+  'Viento'
+];
+
+const monsterlingRoles = [
+  'Apoyo',
+  'Asesino',
+  'Destructor',
+  'Luchador'
+];
+
+const monsterlingStatistics = [
+  {
+    label: 'Índice de crítico',
+    terms: ['indice de critico']
+  },
+  {
+    label: 'Daño crítico',
+    terms: ['dano critico']
+  },
+  {
+    label: 'RES',
+    terms: ['res', 'resistencia']
+  },
+  {
+    label: 'ATQ',
+    terms: ['atq', 'ataque']
+  },
+  {
+    label: 'DEF',
+    terms: ['def', 'defensa']
+  },
+  {
+    label: 'PS',
+    terms: ['ps', 'puntos de salud']
+  }
+];
+
+function normalizeMonsterlingText(value) {
+  return String(value ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+    .replace(/\s+/g, ' ');
+}
+
+function containsMonsterlingTerm(text, term) {
+  const normalizedText = normalizeMonsterlingText(text);
+  const normalizedTerm = normalizeMonsterlingText(term);
+
+  if (!normalizedText || !normalizedTerm) return false;
+
+  return (' ' + normalizedText + ' ').includes(
+    ' ' + normalizedTerm + ' '
+  );
+}
+
+function getMonsterlingText(record) {
+  const effect = getField(record, [
+    'efecto de rango',
+    'efecto_de_rango',
+    'efecto'
+  ]);
+
+  const link = getField(record, [
+    'enlace',
+    'link'
+  ]);
+
+  return [effect, link]
+    .filter(value =>
+      value !== undefined &&
+      value !== null &&
+      String(value).trim() !== ''
+    )
+    .join(' ');
+}
+
+function getMonsterlingEffectTags(record, field) {
+  const text = getMonsterlingText(record);
+
+  if (field === 'elemento') {
+    return monsterlingElements.filter(element =>
+      containsMonsterlingTerm(text, element)
+    );
+  }
+
+  if (field === 'rol') {
+    return monsterlingRoles.filter(role =>
+      containsMonsterlingTerm(text, role)
+    );
+  }
+
+  if (field === 'estadisticas') {
+    return monsterlingStatistics
+      .filter(statistic =>
+        statistic.terms.some(term =>
+          containsMonsterlingTerm(text, term)
+        )
+      )
+      .map(statistic => statistic.label);
+  }
+
+  return [];
+}
+
+function hasMonsterlingLink(record) {
+  const link = getField(record, ['enlace', 'link']);
+
+  return (
+    link !== undefined &&
+    link !== null &&
+    String(link).trim() !== ''
+  );
+}
+
+function getMonsterlingLinkOptions(rows) {
+  const options = [];
+
+  if (rows.some(hasMonsterlingLink)) {
+    options.push('Con enlace');
+  }
+
+  if (rows.some(record => !hasMonsterlingLink(record))) {
+    options.push('Sin enlace');
+  }
+
+  return options;
+}
+
+
+// --------------------------------------------------
+// ADMINISTRADOR DE FILTROS
+// --------------------------------------------------
+
 export function createFilterManager({
   getActive,
   filterState,
@@ -74,6 +220,7 @@ export function createFilterManager({
     }));
   }
 
+
   // --------------------------------------------------
   // OPCIONES DE FILTROS
   // --------------------------------------------------
@@ -99,6 +246,30 @@ export function createFilterManager({
   function getFilterOptions(rows, definition) {
     const active = getActive();
 
+    // Filtros de Monsterlings.
+    if (active === 'monsterlings') {
+      if (definition.field === 'enlace') {
+        return getMonsterlingLinkOptions(rows);
+      }
+
+      if (
+        definition.field === 'elemento' ||
+        definition.field === 'rol' ||
+        definition.field === 'estadisticas'
+      ) {
+        const values = rows.flatMap(record =>
+          getMonsterlingEffectTags(record, definition.field)
+        );
+
+        return [...new Set(values)].sort((a, b) =>
+          a.localeCompare(b, 'es', {
+            sensitivity: 'base'
+          })
+        );
+      }
+    }
+
+    // Filtros de Equipamientos.
     if (active === 'equipamientos') {
       if (definition.field === 'bonus_piezas') {
         return getEquipmentBonusOptions(rows);
@@ -120,6 +291,7 @@ export function createFilterManager({
       }
     }
 
+    // Filtros de Artefactos.
     if (
       active === 'artefactos' &&
       (
@@ -154,6 +326,7 @@ export function createFilterManager({
       })
     );
   }
+
 
   // --------------------------------------------------
   // FILTROS DE SELECCIÓN MÚLTIPLE
@@ -193,6 +366,7 @@ export function createFilterManager({
       '</div>'
     );
   }
+
 
   // --------------------------------------------------
   // RENDERIZAR FILTROS
@@ -300,6 +474,7 @@ export function createFilterManager({
     });
   }
 
+
   // --------------------------------------------------
   // APLICAR FILTROS
   // --------------------------------------------------
@@ -322,6 +497,45 @@ export function createFilterManager({
           )
         ) {
           return true;
+        }
+
+        // Filtro de enlace de Monsterlings.
+        if (
+          active === 'monsterlings' &&
+          definition.field === 'enlace'
+        ) {
+          const linkValue = hasMonsterlingLink(record)
+            ? 'Con enlace'
+            : 'Sin enlace';
+
+          if (Array.isArray(selectedValue)) {
+            return selectedValue.includes(linkValue);
+          }
+
+          return linkValue === selectedValue;
+        }
+
+        // Filtros automáticos de Elemento, Rol y Estadísticas.
+        if (
+          active === 'monsterlings' &&
+          (
+            definition.field === 'elemento' ||
+            definition.field === 'rol' ||
+            definition.field === 'estadisticas'
+          )
+        ) {
+          const tags = getMonsterlingEffectTags(
+            record,
+            definition.field
+          );
+
+          if (Array.isArray(selectedValue)) {
+            return selectedValue.some(value =>
+              tags.includes(value)
+            );
+          }
+
+          return tags.includes(selectedValue);
         }
 
         // Filtros de bonus de Equipamientos.
@@ -410,6 +624,7 @@ export function createFilterManager({
     );
   }
 
+
   // --------------------------------------------------
   // RESTABLECER FILTROS
   // --------------------------------------------------
@@ -422,6 +637,7 @@ export function createFilterManager({
     render();
     onContentChange();
   }
+
 
   // --------------------------------------------------
   // EVENTOS
