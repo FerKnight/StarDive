@@ -1,4 +1,3 @@
-
 export const categories = [
   {key:'personajes',label:'Personajes',dataKey:'personajes'},
   {key:'artefactos',label:'Artefactos',dataKey:'artefactos'},
@@ -28,6 +27,7 @@ export const filterDefinitions = {
   ],
 
   equipamientos: [
+    {field:'piezas',label:'Piezas'},
     {field:'elemento',label:'Elemento'},
     {field:'tipo_efecto',label:'Tipo de efecto'}
   ],
