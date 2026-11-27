@@ -1,4 +1,3 @@
-
 import {
   escapeHtml,
   safe,
@@ -107,18 +106,26 @@ function getEquipmentPieces(record) {
     .filter(Boolean);
 }
 
+function capitalizePieceName(value) {
+  const name = String(value ?? '');
+
+  return name.charAt(0).toUpperCase() + name.slice(1);
+}
+
 function renderPiece(piece, equipmentName) {
   const image = imagePath(
     'equipamientos',
     equipmentName + '_' + piece.name
   );
 
+  const displayName = capitalizePieceName(piece.name);
+
   return (
     '<div class="equipment-piece">' +
       '<div class="equipment-piece-image-wrap">' +
         '<img class="equipment-piece-image" ' +
           'src="' + escapeHtml(image) + '" ' +
-          'alt="' + escapeHtml(piece.name) + ' de ' +
+          'alt="' + escapeHtml(displayName) + ' de ' +
             escapeHtml(equipmentName) + '" ' +
           'loading="lazy" ' +
           'onerror="this.style.display=\'none\';' +
@@ -128,7 +135,7 @@ function renderPiece(piece, equipmentName) {
         '</span>' +
       '</div>' +
       '<span class="equipment-piece-name">' +
-        escapeHtml(piece.name) +
+        escapeHtml(displayName) +
       '</span>' +
       (
         piece.effect
