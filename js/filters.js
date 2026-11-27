@@ -60,15 +60,15 @@ const monsterlingStatistics = [
   },
   {
     label: 'RES',
-    terms: ['res', 'resistencia']
+    terms: ['res']
   },
   {
     label: 'ATQ',
-    terms: ['atq', 'ataque']
+    terms: ['atq']
   },
   {
     label: 'DEF',
-    terms: ['def', 'defensa']
+    terms: ['def']
   },
   {
     label: 'PS',
