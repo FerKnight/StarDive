@@ -12,11 +12,11 @@ import {
 // --------------------------------------------------
 
 const PREMIUM_ARTIFACTS = [
-  'halo celestial de vida',
-  'lucha frenetica',
-  'oscuridad opresiva',
-  'temblores tronidos'
-];
+  'Halo celestial de vida',
+  'Lucha Frenética',
+  'Oscuridad opresiva',
+  'Temblores tronidos'
+].map(normalize);
 
 function getArtifactName(record) {
   return normalize(
