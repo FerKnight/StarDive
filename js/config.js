@@ -24,8 +24,7 @@ export const filterDefinitions = {
   artefactos: [
     {field:'grado',label:'Grado',aliases:['grado','rareza','rarity']},
     {field:'rol',label:'Rol',aliases:['rol','role']},
-    {field:'elemento',label:'Elemento'},
-    {field:'efectos',label:'Efectos'}
+    {field:'elemento',label:'Elemento'}
   ],
 
   equipamientos: [
