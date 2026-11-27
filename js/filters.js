@@ -1,4 +1,3 @@
-
 import {
   categories,
   filterDefinitions
@@ -19,7 +18,6 @@ import {
 import {
   getEquipmentEffectTags
 } from './equipamientos.js';
-
 
 // --------------------------------------------------
 // DETECCIÓN AUTOMÁTICA DE MONSTERLINGS
@@ -161,7 +159,6 @@ function getMonsterlingLinkOptions(rows) {
   return options;
 }
 
-
 // --------------------------------------------------
 // ADMINISTRADOR DE FILTROS
 // --------------------------------------------------
@@ -220,24 +217,26 @@ export function createFilterManager({
     }));
   }
 
-
   // --------------------------------------------------
   // OPCIONES DE FILTROS
   // --------------------------------------------------
 
-  function getEquipmentBonusOptions(rows) {
+  function getEquipmentPieceCount(record) {
+    return Array.isArray(record?.piezas)
+      ? record.piezas.length
+      : 0;
+  }
+
+  function getEquipmentPieceOptions(rows) {
+    const counts = rows.map(getEquipmentPieceCount);
     const options = [];
 
-    if (rows.some(record =>
-      safe(getField(record, ['efecto_2_piezas'])) !== '—'
-    )) {
-      options.push('Efecto de 2 piezas');
+    if (counts.includes(4)) {
+      options.push('4 piezas');
     }
 
-    if (rows.some(record =>
-      safe(getField(record, ['efecto_4_piezas'])) !== '—'
-    )) {
-      options.push('Efecto de 4 piezas');
+    if (counts.includes(2)) {
+      options.push('2 piezas');
     }
 
     return options;
@@ -271,8 +270,8 @@ export function createFilterManager({
 
     // Filtros de Equipamientos.
     if (active === 'equipamientos') {
-      if (definition.field === 'bonus_piezas') {
-        return getEquipmentBonusOptions(rows);
+      if (definition.field === 'piezas') {
+        return getEquipmentPieceOptions(rows);
       }
 
       if (
@@ -327,7 +326,6 @@ export function createFilterManager({
     );
   }
 
-
   // --------------------------------------------------
   // FILTROS DE SELECCIÓN MÚLTIPLE
   // --------------------------------------------------
@@ -366,7 +364,6 @@ export function createFilterManager({
       '</div>'
     );
   }
-
 
   // --------------------------------------------------
   // RENDERIZAR FILTROS
@@ -409,8 +406,6 @@ export function createFilterManager({
 
       if (!options.length) return '';
 
-      // Tres o más opciones: selección múltiple.
-      // Una o dos opciones: lista desplegable simple.
       if (options.length >= 3) {
         return renderMultiFilter(definition, options, current);
       }
@@ -473,7 +468,6 @@ export function createFilterManager({
       });
     });
   }
-
 
   // --------------------------------------------------
   // APLICAR FILTROS
@@ -538,33 +532,29 @@ export function createFilterManager({
           return tags.includes(selectedValue);
         }
 
-        // Filtros de bonus de Equipamientos.
+        // Filtro de cantidad exacta de piezas de Equipamientos.
         if (
           active === 'equipamientos' &&
-          definition.field === 'bonus_piezas'
+          definition.field === 'piezas'
         ) {
-          const effects = [
-            safe(getField(record, ['efecto_2_piezas'])),
-            safe(getField(record, ['efecto_4_piezas']))
-          ];
-
-          const available = [];
-
-          if (effects[0] !== '—') {
-            available.push('Efecto de 2 piezas');
-          }
-
-          if (effects[1] !== '—') {
-            available.push('Efecto de 4 piezas');
-          }
+          const pieceCount = getEquipmentPieceCount(record);
 
           if (Array.isArray(selectedValue)) {
             return selectedValue.some(value =>
-              available.includes(value)
+              (value === '4 piezas' && pieceCount === 4) ||
+              (value === '2 piezas' && pieceCount === 2)
             );
           }
 
-          return available.includes(selectedValue);
+          if (selectedValue === '4 piezas') {
+            return pieceCount === 4;
+          }
+
+          if (selectedValue === '2 piezas') {
+            return pieceCount === 2;
+          }
+
+          return true;
         }
 
         // Filtros automáticos de tipo y elemento de Equipamientos.
@@ -624,7 +614,6 @@ export function createFilterManager({
     );
   }
 
-
   // --------------------------------------------------
   // RESTABLECER FILTROS
   // --------------------------------------------------
@@ -637,7 +626,6 @@ export function createFilterManager({
     render();
     onContentChange();
   }
-
 
   // --------------------------------------------------
   // EVENTOS
