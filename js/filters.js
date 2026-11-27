@@ -125,33 +125,31 @@ function getMonsterlingText(record) {
 }
 
 function getMonsterlingEffectTags(record, field) {
-  // Las estadísticas se detectan exclusivamente
-  // en el campo Efecto de rango.
-  if (field === 'estadisticas') {
+  // Rol y Estadísticas: exclusivamente Efecto de rango.
+  if (field === 'estadisticas' || field === 'rol') {
     const effect = getMonsterlingEffect(record);
 
-    return monsterlingStatistics
-      .filter(statistic =>
-        statistic.terms.some(term =>
-          containsMonsterlingTerm(effect, term)
+    if (field === 'estadisticas') {
+      return monsterlingStatistics
+        .filter(statistic =>
+          statistic.terms.some(term =>
+            containsMonsterlingTerm(effect, term)
+          )
         )
-      )
-      .map(statistic => statistic.label);
-  }
+        .map(statistic => statistic.label);
+    }
 
-  // Elemento y Rol conservan la detección
-  // en el efecto de rango y el enlace.
-  const text = getMonsterlingText(record);
-
-  if (field === 'elemento') {
-    return monsterlingElements.filter(element =>
-      containsMonsterlingTerm(text, element)
+    return monsterlingRoles.filter(role =>
+      containsMonsterlingTerm(effect, role)
     );
   }
 
-  if (field === 'rol') {
-    return monsterlingRoles.filter(role =>
-      containsMonsterlingTerm(text, role)
+  // Elemento: Efecto de rango y Enlace.
+  if (field === 'elemento') {
+    const text = getMonsterlingText(record);
+
+    return monsterlingElements.filter(element =>
+      containsMonsterlingTerm(text, element)
     );
   }
 
