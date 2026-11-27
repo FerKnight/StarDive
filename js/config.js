@@ -1,3 +1,4 @@
+
 export const categories = [
   {key:'personajes',label:'Personajes',dataKey:'personajes'},
   {key:'artefactos',label:'Artefactos',dataKey:'artefactos'},
