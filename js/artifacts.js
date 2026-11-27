@@ -1,3 +1,4 @@
+
 import {
   safe,
   escapeHtml,
@@ -45,7 +46,7 @@ export function splitArtifactGroups(rows) {
     }
   }
 
-  // Orden fijo de los cuatro artefactos premium.
+  // Orden fijo de los cuatro artefactos del pase.
   premium.sort((a, b) => {
     return PREMIUM_ARTIFACTS.indexOf(getArtifactName(a)) -
       PREMIUM_ARTIFACTS.indexOf(getArtifactName(b));
@@ -234,16 +235,55 @@ export function renderArtifactCard(record, index) {
   );
 }
 
+// --------------------------------------------------
+// SECCIONES DEL LISTADO
+// --------------------------------------------------
+
+function renderArtifactSection(title, rows, startIndex = 0) {
+  if (!rows.length) return '';
+
+  return (
+    '<section class="artifact-section">' +
+
+      '<h2 class="artifact-section-title">' +
+        escapeHtml(title) +
+      '</h2>' +
+
+      '<div class="artifact-grid">' +
+        rows.map((record, index) =>
+          renderArtifactCard(record, startIndex + index)
+        ).join('') +
+      '</div>' +
+
+    '</section>'
+  );
+}
+
+// --------------------------------------------------
+// RENDERIZADO GENERAL
+// --------------------------------------------------
+
 export function renderArtifactCards(rows) {
   if (!rows.length) {
     return '<div class="empty">Todavía no hay registros publicados en esta categoría.</div>';
   }
 
+  const groups = splitArtifactGroups(rows);
+
   return (
-    '<div class="artifact-grid">' +
-      rows.map((record, index) =>
-        renderArtifactCard(record, index)
-      ).join('') +
+    '<div class="artifact-sections">' +
+
+      renderArtifactSection(
+        'Artefactos del pase',
+        groups.premium
+      ) +
+
+      renderArtifactSection(
+        'Artafctos',
+        groups.general,
+        groups.premium.length
+      ) +
+
     '</div>'
   );
 }
