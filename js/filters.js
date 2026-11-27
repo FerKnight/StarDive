@@ -1,3 +1,4 @@
+
 import {
   categories,
   filterDefinitions
@@ -20,8 +21,18 @@ import {
 } from './equipamientos.js';
 
 // --------------------------------------------------
-// DETECCIÓN AUTOMÁTICA DE MONSTERLINGS
+// CONFIGURACIÓN DE MONSTERLINGS
 // --------------------------------------------------
+
+const monsterlingRegions = [
+  'Elendor',
+  'Varhine',
+  'Serenia',
+  'Surah',
+  'Namryung',
+  'Muwon',
+  'Sector 3'
+];
 
 const monsterlingElements = [
   'Fuego',
@@ -33,9 +44,9 @@ const monsterlingElements = [
 
 const monsterlingRoles = [
   'Apoyo',
-  'Asesino',
-  'Destructor',
-  'Luchador'
+  'Neutralización',
+  'Contención',
+  'Refriega'
 ];
 
 const monsterlingStatistics = [
@@ -86,12 +97,18 @@ function containsMonsterlingTerm(text, term) {
   );
 }
 
-function getMonsterlingText(record) {
-  const effect = getField(record, [
+// Obtiene únicamente el campo Efecto de rango.
+function getMonsterlingEffect(record) {
+  return getField(record, [
     'efecto de rango',
     'efecto_de_rango',
     'efecto'
   ]);
+}
+
+// Obtiene el texto del efecto y del enlace.
+function getMonsterlingText(record) {
+  const effect = getMonsterlingEffect(record);
 
   const link = getField(record, [
     'enlace',
@@ -108,6 +125,22 @@ function getMonsterlingText(record) {
 }
 
 function getMonsterlingEffectTags(record, field) {
+  // Las estadísticas se detectan exclusivamente
+  // en el campo Efecto de rango.
+  if (field === 'estadisticas') {
+    const effect = getMonsterlingEffect(record);
+
+    return monsterlingStatistics
+      .filter(statistic =>
+        statistic.terms.some(term =>
+          containsMonsterlingTerm(effect, term)
+        )
+      )
+      .map(statistic => statistic.label);
+  }
+
+  // Elemento y Rol conservan la detección
+  // en el efecto de rango y el enlace.
   const text = getMonsterlingText(record);
 
   if (field === 'elemento') {
@@ -120,16 +153,6 @@ function getMonsterlingEffectTags(record, field) {
     return monsterlingRoles.filter(role =>
       containsMonsterlingTerm(text, role)
     );
-  }
-
-  if (field === 'estadisticas') {
-    return monsterlingStatistics
-      .filter(statistic =>
-        statistic.terms.some(term =>
-          containsMonsterlingTerm(text, term)
-        )
-      )
-      .map(statistic => statistic.label);
   }
 
   return [];
@@ -242,11 +265,49 @@ export function createFilterManager({
     return options;
   }
 
+  function sortMonsterlingRegions(values) {
+    return [...values].sort((a, b) => {
+      const indexA = monsterlingRegions.findIndex(region =>
+        normalizeMonsterlingText(region) ===
+        normalizeMonsterlingText(a)
+      );
+
+      const indexB = monsterlingRegions.findIndex(region =>
+        normalizeMonsterlingText(region) ===
+        normalizeMonsterlingText(b)
+      );
+
+      if (indexA === -1 && indexB === -1) {
+        return a.localeCompare(b, 'es', {
+          sensitivity: 'base'
+        });
+      }
+
+      if (indexA === -1) return 1;
+      if (indexB === -1) return -1;
+
+      return indexA - indexB;
+    });
+  }
+
   function getFilterOptions(rows, definition) {
     const active = getActive();
 
     // Filtros de Monsterlings.
     if (active === 'monsterlings') {
+      if (definition.field === 'region') {
+        const values = rows
+          .map(record => getFilterValue(record, definition))
+          .filter(value =>
+            value !== undefined &&
+            value !== null &&
+            value !== ''
+          )
+          .map(value => safe(value));
+
+        return sortMonsterlingRegions([...new Set(values)]);
+      }
+
       if (definition.field === 'enlace') {
         return getMonsterlingLinkOptions(rows);
       }
