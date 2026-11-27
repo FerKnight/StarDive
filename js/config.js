@@ -18,8 +18,7 @@ export const filterDefinitions = {
   personajes: [
     {field:'grado',label:'Grado',aliases:['grado','rareza','rarity']},
     {field:'elemento',label:'Elemento',aliases:['elemento','element']},
-    {field:'tipo',label:'Tipo',aliases:['tipo','type']},
-    {field:'rango',label:'Rango',aliases:['rango','rank']}
+    {field:'tipo',label:'Rol',aliases:['tipo','type']}
   ],
 
   artefactos: [
