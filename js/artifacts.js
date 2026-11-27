@@ -279,7 +279,7 @@ export function renderArtifactCards(rows) {
       ) +
 
       renderArtifactSection(
-        'Artafctos',
+        'Artefactos',
         groups.general,
         groups.premium.length
       ) +
