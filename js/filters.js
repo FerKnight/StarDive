@@ -60,7 +60,7 @@ const monsterlingStatistics = [
   },
   {
     label: 'RES',
-    terms: ['res']
+    terms: ['res', 'resistencia']
   },
   {
     label: 'ATQ',
@@ -68,11 +68,47 @@ const monsterlingStatistics = [
   },
   {
     label: 'DEF',
-    terms: ['def']
+    terms: ['def', 'defensa']
   },
   {
     label: 'PS',
     terms: ['ps', 'puntos de salud']
+  },
+  {
+    label: 'Supresión',
+    terms: ['supresion']
+  },
+  {
+    label: 'Refriega',
+    terms: ['refriega']
+  },
+  {
+    label: 'Neutralización',
+    terms: ['neutralizacion']
+  },
+  {
+    label: 'Contención',
+    terms: ['contencion']
+  },
+  {
+    label: 'Habilidad especial',
+    terms: ['habilidad especial']
+  },
+  {
+    label: 'Debilidad elemental',
+    terms: ['debilidad elemental']
+  },
+  {
+    label: 'Daño físico',
+    terms: ['dano fisico']
+  },
+  {
+    label: 'Apoyo',
+    terms: ['apoyo']
+  },
+  {
+    label: 'Jefes enemigos',
+    terms: ['jefes enemigos', 'jefe enemigo']
   }
 ];
 
@@ -125,7 +161,7 @@ function getMonsterlingText(record) {
 }
 
 function getMonsterlingEffectTags(record, field) {
-  // Rol y Estadísticas: exclusivamente Efecto de rango.
+  // Estadísticas y Rol: exclusivamente Efecto de rango.
   if (field === 'estadisticas' || field === 'rol') {
     const effect = getMonsterlingEffect(record);
 
