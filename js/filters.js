@@ -79,18 +79,6 @@ const monsterlingStatistics = [
     terms: ['supresion']
   },
   {
-    label: 'Refriega',
-    terms: ['refriega']
-  },
-  {
-    label: 'Neutralización',
-    terms: ['neutralizacion']
-  },
-  {
-    label: 'Contención',
-    terms: ['contencion']
-  },
-  {
     label: 'Habilidad especial',
     terms: ['habilidad especial']
   },
@@ -101,10 +89,6 @@ const monsterlingStatistics = [
   {
     label: 'Daño físico',
     terms: ['dano fisico']
-  },
-  {
-    label: 'Apoyo',
-    terms: ['apoyo']
   },
   {
     label: 'Jefes enemigos',
