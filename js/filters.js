@@ -96,6 +96,15 @@ const monsterlingStatistics = [
   }
 ];
 
+const monsterlingPrimaryStatistics = [
+  'ATQ',
+  'Daño crítico',
+  'Debilidad elemental',
+  'Índice de crítico',
+  'Jefes enemigos',
+  'RES'
+];
+
 function normalizeMonsterlingText(value) {
   return String(value ?? '')
     .normalize('NFD')
@@ -339,7 +348,23 @@ export function createFilterManager({
           getMonsterlingEffectTags(record, definition.field)
         );
 
-        return [...new Set(values)].sort((a, b) =>
+        const uniqueValues = [...new Set(values)];
+
+        if (definition.field === 'estadisticas') {
+          const primary = monsterlingPrimaryStatistics.filter(option =>
+            uniqueValues.includes(option)
+          );
+
+          const additional = uniqueValues
+            .filter(option => !monsterlingPrimaryStatistics.includes(option))
+            .sort((a, b) => a.localeCompare(b, 'es', {
+              sensitivity: 'base'
+            }));
+
+          return [...primary, ...additional];
+        }
+
+        return uniqueValues.sort((a, b) =>
           a.localeCompare(b, 'es', {
             sensitivity: 'base'
           })
@@ -419,6 +444,34 @@ export function createFilterManager({
         ? selected[0]
         : count + ' seleccionados';
 
+    const isMonsterlingStatistics =
+      getActive() === 'monsterlings' &&
+      definition.field === 'estadisticas';
+
+    const primaryOptions = isMonsterlingStatistics
+      ? options.filter(option =>
+          monsterlingPrimaryStatistics.includes(option)
+        )
+      : options;
+
+    const additionalOptions = isMonsterlingStatistics
+      ? options.filter(option =>
+          !monsterlingPrimaryStatistics.includes(option)
+        )
+      : [];
+
+    function renderOption(option) {
+      return (
+        '<label class="multi-filter-option">' +
+          '<input type="checkbox" data-multi-option="' +
+            escapeHtml(option) + '"' +
+            (selected.includes(option) ? ' checked' : '') +
+          '>' +
+          '<span>' + escapeHtml(option) + '</span>' +
+        '</label>'
+      );
+    }
+
     return (
       '<div class="filter-item">' +
         '<label>' + escapeHtml(definition.label) + '</label>' +
@@ -429,15 +482,16 @@ export function createFilterManager({
             '<span class="arrow">▼</span>' +
           '</button>' +
           '<div class="multi-filter-menu">' +
-            options.map(option =>
-              '<label class="multi-filter-option">' +
-                '<input type="checkbox" data-multi-option="' +
-                  escapeHtml(option) + '"' +
-                  (selected.includes(option) ? ' checked' : '') +
-                '>' +
-                '<span>' + escapeHtml(option) + '</span>' +
-              '</label>'
-            ).join('') +
+            primaryOptions.map(renderOption).join('') +
+            (
+              additionalOptions.length
+                ? '<button type="button" class="multi-filter-more-button" ' +
+                    'aria-expanded="false" aria-label="Mostrar más estadísticas">+</button>' +
+                  '<div class="multi-filter-extra-options" style="display:none">' +
+                    additionalOptions.map(renderOption).join('') +
+                  '</div>'
+                : ''
+            ) +
           '</div>' +
         '</div>' +
       '</div>'
@@ -523,6 +577,24 @@ export function createFilterManager({
         const isOpen = menu.classList.toggle('open');
         button.setAttribute('aria-expanded', String(isOpen));
       });
+
+      const moreButton = container.querySelector('.multi-filter-more-button');
+      const extraOptions = container.querySelector('.multi-filter-extra-options');
+
+      if (moreButton && extraOptions) {
+        moreButton.addEventListener('click', event => {
+          event.stopPropagation();
+
+          const isExpanded = extraOptions.style.display !== 'none';
+          extraOptions.style.display = isExpanded ? 'none' : 'block';
+          moreButton.textContent = isExpanded ? '+' : '−';
+          moreButton.setAttribute('aria-expanded', String(!isExpanded));
+          moreButton.setAttribute(
+            'aria-label',
+            isExpanded ? 'Mostrar más estadísticas' : 'Mostrar menos estadísticas'
+          );
+        });
+      }
 
       container.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
         checkbox.addEventListener('change', () => {
